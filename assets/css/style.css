@@ -1,0 +1,36 @@
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #a78bfa;
+    border-radius: 20px;
+}
+
+.card {
+    background: white;
+    border-radius: 25px;
+    padding: 24px;
+    box-shadow: 0 5px 20px rgba(0,0,0,.08);
+}
+
+.dark .card {
+    background: #1e293b;
+}
+
+table th {
+    color: #64748b;
+    font-weight: 600;
+}
+
+.dark table th {
+    color: #cbd5e1;
+}
+
+table td {
+    color: #334155;
+}
+
+.dark table td {
+    color: #e2e8f0;
+}
