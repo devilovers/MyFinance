@@ -1,8 +1,6 @@
-# 💜 MyFinance
-
-<p align="center">
-  💸 MyFinance V1.0
-</p>
+<h1 align="center">
+  💸 MyFinance
+</h1>
 
 <p align="center">
   A modern personal finance management website built with PHP and MySQL.
