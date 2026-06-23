@@ -66,3 +66,14 @@ myfinance/
 ├── pages/
 ├── index.php
 └── README.md
+
+---
+
+👩🏻‍💻 Author
+Nur Islami Sabila
+
+Frontend Developer & Informatics Student Candidate from Indonesia 🇮🇩
+
+"Learning by building, growing by creating."
+
+⭐ If you like this project, don't forget to give it a star.
