@@ -29,139 +29,193 @@ $bersih_bulan_ini = $pemasukan_bulan_ini - $pengeluaran_bulan_ini;
 
 $total_tabungan = totalTabungan($conn);
 $total_investasi = totalInvestasi($conn);
-$total_utang = totalUtang($conn);
 
-$data_transaksi = mysqli_query($conn, "
+$log_transaksi = mysqli_query($conn, "
     SELECT * FROM transaksi 
     WHERE MONTH(tanggal) = '$bulan_pilihan' 
     AND YEAR(tanggal) = '$tahun_pilihan'
     ORDER BY tanggal DESC, id DESC
 ");
 
-include '../includes/header.php';
-include '../includes/sidebar.php';
-include '../includes/navbar.php';
-
-$nama_bulan = [
+$bulan_nama = [
     '01' => 'Januari', '02' => 'Februari', '03' => 'Maret', '04' => 'April',
     '05' => 'Mei', '06' => 'Juni', '07' => 'Juli', '08' => 'Agustus',
     '09' => 'September', '10' => 'Oktober', '11' => 'November', '12' => 'Desember'
 ];
+
+include '../includes/header.php';
+include '../includes/sidebar.php';
+include '../includes/navbar.php';
 ?>
 
-<h1 class="text-3xl font-bold mb-6 dark:text-white">
-    Laporan & Rekapitulasi Keuangan
-</h1>
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+    <div>
+        <h1 class="text-2xl font-bold text-slate-800 dark:text-white tracking-tight">
+            Laporan & Analisis Bulanan
+        </h1>
+        <p class="text-xs text-slate-400 dark:text-slate-500 mt-0.5">
+            Pantau rincian arus kas masuk, keluar, dan rasio keuangan Anda secara periodik.
+        </p>
+    </div>
+</div>
 
-<div class="card mb-6">
-    <form method="GET" action="" class="flex flex-wrap items-end gap-4">
-        <div class="flex-1 min-w-[200px]">
-            <label class="block font-medium text-gray-700 dark:text-gray-300 mb-2">Pilih Bulan</label>
-            <select name="bulan" class="w-full p-3 border rounded-xl dark:bg-slate-700 dark:text-white dark:border-slate-600 focus:outline-none focus:ring-2 focus:ring-violet-500">
-                <?php foreach ($nama_bulan as $key => $value): ?>
-                    <option value="<?= $key ?>" <?= $bulan_pilihan == $key ? 'selected' : '' ?>><?= $value ?></option>
-                <?php endforeach; ?>
-            </select>
+<div class="p-6 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/50 rounded-2xl shadow-sm mb-6">
+    <form method="GET" action="" class="flex flex-col sm:flex-row gap-3">
+        <div class="flex-1 grid grid-cols-2 gap-3">
+            <div>
+                <label class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider block mb-1.5">Pilih Bulan</label>
+                <select 
+                    name="bulan" 
+                    class="w-full px-3 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-400/20 focus:border-violet-400 transition-all"
+                >
+                    <?php foreach ($bulan_nama as $key => $nama): ?>
+                        <option value="<?= $key ?>" <?= $bulan_pilihan == $key ? 'selected' : '' ?>>
+                            <?= $nama ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <div>
+                <label class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider block mb-1.5">Pilih Tahun</label>
+                <select 
+                    name="tahun" 
+                    class="w-full px-3 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-400/20 focus:border-violet-400 transition-all"
+                >
+                    <?php 
+                    $tahun_sekarang = date('Y');
+                    for ($i = $tahun_sekarang - 3; $i <= $tahun_sekarang + 3; $i++): 
+                    ?>
+                        <option value="<?= $i ?>" <?= $tahun_pilihan == $i ? 'selected' : '' ?>>
+                            <?= $i ?>
+                        </option>
+                    <?php endfor; ?>
+                </select>
+            </div>
         </div>
-
-        <div class="flex-1 min-w-[200px]">
-            <label class="block font-medium text-gray-700 dark:text-gray-300 mb-2">Pilih Tahun</label>
-            <select name="tahun" class="w-full p-3 border rounded-xl dark:bg-slate-700 dark:text-white dark:border-slate-600 focus:outline-none focus:ring-2 focus:ring-violet-500">
-                <?php 
-                $tahun_sekarang = date('Y');
-                for ($t = $tahun_sekarang - 3; $t <= $tahun_sekarang + 2; $t++): 
-                ?>
-                    <option value="<?= $t ?>" <?= $tahun_pilihan == $t ? 'selected' : '' ?>><?= $t ?></option>
-                <?php endfor; ?>
-            </select>
-        </div>
-
-        <div>
-            <button type="submit" class="w-full lg:w-auto bg-violet-500 hover:bg-violet-600 text-white px-6 py-3 rounded-xl font-semibold shadow-md transition flex items-center justify-center gap-2">
-                <i class="fa-solid fa-filter"></i> Filter Data
+        <div class="flex items-end">
+            <button 
+                type="submit" 
+                class="w-full sm:w-auto px-6 py-2.5 bg-violet-500 hover:bg-violet-600 text-white rounded-xl font-medium text-sm shadow-sm shadow-violet-500/10 transition-colors duration-150 h-[42px]"
+            >
+                Terapkan Filter
             </button>
         </div>
     </form>
 </div>
 
-<div class="grid lg:grid-cols-3 md:grid-cols-2 gap-6 mb-6">
-    <div class="card border-l-4 border-green-500">
-        <p class="text-gray-500 dark:text-gray-400 font-medium">Pemasukan Bulan Ini</p>
-        <h2 class="text-2xl font-bold text-green-500 mt-2"><?= rupiah($pemasukan_bulan_ini); ?></h2>
+<div class="grid md:grid-cols-3 gap-6 mb-6">
+    <div class="p-5 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/50 rounded-2xl shadow-sm flex items-center gap-4">
+        <span class="w-12 h-12 rounded-xl bg-green-50 dark:bg-green-950/30 text-green-500 flex items-center justify-center text-lg shrink-0">
+            <i class="fa-solid fa-arrow-down-long"></i>
+        </span>
+        <div class="min-w-0">
+            <p class="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Total Pemasukan</p>
+            <h3 class="text-lg font-bold text-slate-800 dark:text-white tracking-tight mt-0.5 truncate"><?= rupiah($pemasukan_bulan_ini) ?></h3>
+        </div>
     </div>
 
-    <div class="card border-l-4 border-red-500">
-        <p class="text-gray-500 dark:text-gray-400 font-medium">Pengeluaran Bulan Ini</p>
-        <h2 class="text-2xl font-bold text-red-500 mt-2"><?= rupiah($pengeluaran_bulan_ini); ?></h2>
+    <div class="p-5 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/50 rounded-2xl shadow-sm flex items-center gap-4">
+        <span class="w-12 h-12 rounded-xl bg-red-50 dark:bg-red-950/30 text-red-500 flex items-center justify-center text-lg shrink-0">
+            <i class="fa-solid fa-arrow-up-long"></i>
+        </span>
+        <div class="min-w-0">
+            <p class="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Total Pengeluaran</p>
+            <h3 class="text-lg font-bold text-slate-800 dark:text-white tracking-tight mt-0.5 truncate"><?= rupiah($pengeluaran_bulan_ini) ?></h3>
+        </div>
     </div>
 
-    <div class="card border-l-4 border-violet-500">
-        <p class="text-gray-500 dark:text-gray-400 font-medium">Selisih Bersih Arus Kas</p>
-        <h2 class="text-2xl font-bold mt-2 <?= $bersih_bulan_ini >= 0 ? 'text-violet-500' : 'text-orange-500' ?>">
-            <?= rupiah($bersih_bulan_ini); ?>
-        </h2>
-    </div>
-
-    <div class="card border-l-4 border-blue-500">
-        <p class="text-gray-500 dark:text-gray-400 font-medium">Total Seluruh Tabungan</p>
-        <h2 class="text-2xl font-bold text-blue-500 mt-2"><?= rupiah($total_tabungan); ?></h2>
-    </div>
-
-    <div class="card border-l-4 border-yellow-500">
-        <p class="text-gray-500 dark:text-gray-400 font-medium">Total Seluruh Investasi</p>
-        <h2 class="text-2xl font-bold text-yellow-500 mt-2"><?= rupiah($total_investasi); ?></h2>
-    </div>
-
-    <div class="card border-l-4 border-orange-500">
-        <p class="text-gray-500 dark:text-gray-400 font-medium">Total Sisa Utang (Belum Lunas)</p>
-        <h2 class="text-2xl font-bold text-orange-500 mt-2"><?= rupiah($total_utang); ?></h2>
+    <div class="p-5 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/50 rounded-2xl shadow-sm flex items-center gap-4">
+        <span class="w-12 h-12 rounded-xl <?= $bersih_bulan_ini >= 0 ? 'bg-blue-50 dark:bg-blue-950/30 text-blue-500' : 'bg-rose-50 dark:bg-rose-950/30 text-rose-500' ?> flex items-center justify-center text-lg shrink-0">
+            <i class="fa-solid fa-scale-balanced"></i>
+        </span>
+        <div class="min-w-0">
+            <p class="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Selisih Bersih</p>
+            <h3 class="text-lg font-bold tracking-tight mt-0.5 truncate <?= $bersih_bulan_ini >= 0 ? 'text-blue-500' : 'text-rose-500' ?>">
+                <?= rupiah($bersih_bulan_ini) ?>
+            </h3>
+        </div>
     </div>
 </div>
 
-<div class="grid lg:grid-cols-3 gap-6 mb-6">
-    <div class="card lg:col-span-1 flex flex-col justify-between">
+<div class="grid lg:grid-cols-3 gap-6">
+    <div class="p-6 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/50 rounded-2xl shadow-sm flex flex-col justify-between h-fit">
         <div>
-            <h2 class="text-lg font-semibold mb-4 dark:text-white">Rasio Kas Bulan Ini</h2>
+            <h3 class="text-sm font-bold text-slate-800 dark:text-white tracking-tight mb-1">Rasio Alokasi Dana</h3>
+            <p class="text-xs text-slate-400 dark:text-slate-500">Perbandingan persentase arus dana masuk dan keluar.</p>
         </div>
-        <div class="relative w-full p-4 flex items-center justify-center">
-            <canvas id="reportChart" class="max-w-[220px] max-h-[220px]"></canvas>
+        <div class="py-6 flex items-center justify-center relative">
+            <div class="w-48 h-48">
+                <canvas id="reportChart"></canvas>
+            </div>
         </div>
-        <p class="text-xs text-gray-400 text-center mt-4">Perbandingan total uang masuk dan keluar pada periode terpilih.</p>
+        <div class="space-y-2 border-t border-slate-100 dark:border-slate-800/60 pt-4">
+            <div class="flex items-center justify-between text-xs font-medium">
+                <div class="flex items-center gap-2 text-slate-600 dark:text-slate-400">
+                    <span class="w-2.5 h-2.5 rounded-full bg-green-400 shrink-0"></span>
+                    <span>Pemasukan</span>
+                </div>
+                <span class="text-slate-800 dark:text-white font-semibold"><?= rupiah($pemasukan_bulan_ini) ?></span>
+            </div>
+            <div class="flex items-center justify-between text-xs font-medium">
+                <div class="flex items-center gap-2 text-slate-600 dark:text-slate-400">
+                    <span class="w-2.5 h-2.5 rounded-full bg-red-400 shrink-0"></span>
+                    <span>Pengeluaran</span>
+                </div>
+                <span class="text-slate-800 dark:text-white font-semibold"><?= rupiah($pengeluaran_bulan_ini) ?></span>
+            </div>
+        </div>
     </div>
 
-    <div class="card lg:col-span-2">
-        <h2 class="text-xl font-semibold mb-4 dark:text-white">Detail Riwayat Transaksi</h2>
-        
-        <div class="overflow-x-auto">
+    <div class="lg:col-span-2 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/50 rounded-2xl shadow-sm overflow-hidden flex flex-col">
+        <div class="p-6 border-b border-slate-100 dark:border-slate-800/60">
+            <h3 class="text-sm font-bold text-slate-800 dark:text-white tracking-tight mb-1">Log Aliran Transaksi</h3>
+            <p class="text-xs text-slate-400 dark:text-slate-500">Daftar mutasi rekening keuangan yang tercatat pada periode ini.</p>
+        </div>
+        <div class="overflow-x-auto flex-1">
             <table class="w-full text-left border-collapse">
                 <thead>
-                    <tr class="border-b border-gray-200 dark:border-slate-700 text-gray-500 text-sm">
-                        <th class="pb-3 font-medium">Tanggal</th>
-                        <th class="pb-3 font-medium">Kategori / Keterangan</th>
-                        <th class="pb-3 font-medium">Jenis</th>
-                        <th class="pb-3 font-medium text-right">Jumlah</th>
+                    <tr class="border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/20">
+                        <th class="px-6 py-3.5 text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">Tanggal</th>
+                        <th class="px-6 py-3.5 text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">Kategori</th>
+                        <th class="px-6 py-3.5 text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">Jenis</th>
+                        <th class="px-6 py-3.5 text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500 text-right">Jumlah</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-100 dark:divide-slate-700/50">
-                    <?php if (mysqli_num_rows($data_transaksi) > 0): ?>
-                        <?php while ($t = mysqli_fetch_assoc($data_transaksi)): ?>
-                            <tr class="text-gray-700 dark:text-slate-300 text-sm">
-                                <td class="py-3"><?= date('d M Y', strtotime($t['tanggal'])) ?></td>
-                                <td class="py-3 font-medium"><?= htmlspecialchars($t['kategori'] ?? $t['keterangan'] ?? 'Transaksi') ?></td>
-                                <td class="py-3">
-                                    <span class="px-2 py-0.5 text-xs font-semibold rounded-md <?= $t['jenis'] == 'Pemasukan' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' ?>">
-                                        <?= $t['jenis'] ?>
-                                    </span>
+                <tbody class="divide-y divide-slate-100 dark:divide-slate-800/60">
+                    <?php if (mysqli_num_rows($log_transaksi) > 0): ?>
+                        <?php while ($log = mysqli_fetch_assoc($log_transaksi)): ?>
+                            <tr class="hover:bg-slate-50/40 dark:hover:bg-slate-800/20 transition-colors duration-150">
+                                <td class="px-6 py-4 text-sm text-slate-500 dark:text-slate-400 whitespace-nowrap">
+                                    <?= date('d M Y', strtotime($log['tanggal'])) ?>
                                 </td>
-                                <td class="py-3 text-right font-semibold <?= $t['jenis'] == 'Pemasukan' ? 'text-green-600' : 'text-red-600' ?>">
-                                    <?= ($t['jenis'] == 'Pemasukan' ? '+' : '-') . number_format($t['jumlah'], 0, ',', '.') ?>
+                                <td class="px-6 py-4 text-sm font-semibold text-slate-800 dark:text-slate-200 whitespace-nowrap">
+                                    <?= htmlspecialchars($log['kategori']) ?>
+                                </td>
+                                <td class="px-6 py-4 text-sm whitespace-nowrap">
+                                    <?php if (strtolower($log['jenis']) == 'pemasukan'): ?>
+                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-medium bg-green-50 text-green-700 dark:bg-green-950/30 dark:text-green-400">
+                                            Masuk
+                                        </span>
+                                    <?php else: ?>
+                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-medium bg-red-50 text-red-700 dark:bg-red-950/30 dark:text-red-400">
+                                            Keluar
+                                        </span>
+                                    <?php endif; ?>
+                                </td>
+                                <td class="px-6 py-4 text-sm font-bold text-right whitespace-nowrap <?= strtolower($log['jenis']) == 'pemasukan' ? 'text-green-500' : 'text-red-500' ?>">
+                                    <?= strtolower($log['jenis']) == 'pemasukan' ? '+' : '-' ?> <?= rupiah($log['jumlah']) ?>
                                 </td>
                             </tr>
                         <?php endwhile; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="4" class="text-center py-6 text-gray-400">
-                                Tidak ada log transaksi masuk atau keluar pada bulan ini.
+                            <td colspan="4" class="px-6 py-12 text-center">
+                                <span class="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-slate-400 mx-auto mb-3 text-base">
+                                    <i class="fa-solid fa-folder-open"></i>
+                                </span>
+                                <p class="text-sm font-medium text-slate-400 dark:text-slate-500">
+                                    Tidak ada log transaksi masuk atau keluar pada bulan ini.
+                                </p>
                             </td>
                         </tr>
                     <?php endif; ?>
@@ -187,20 +241,18 @@ new Chart(reportCtx, {
                 dataPengeluaran
             ],
             backgroundColor: [
-                dataPemasukan == 0 && dataPengeluaran == 0 ? '#E2E8F0' : '#86EFAC', // Abu-abu jika kosong
-                '#FCA5A5'
+                dataPemasukan == 0 && dataPengeluaran == 0 ? '#cbd5e1' : '#34d399',
+                '#f87171'
             ],
             borderWidth: 0
         }]
     },
     options: {
         responsive: true,
+        maintainAspectRatio: false,
         plugins: {
             legend: {
-                position: 'bottom',
-                labels: {
-                    boxWidth: 12
-                }
+                display: false
             }
         }
     }

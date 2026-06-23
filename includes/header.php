@@ -4,6 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <script>
+        (function () {
+            const savedTheme = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        })();
+    </script>
+
     <title>MyFinance</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
@@ -41,25 +53,5 @@
     >
 
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-    <link
-        rel="stylesheet"
-        href="../assets/css/style.css"
-    >
 </head>
-
-<body
-    class="
-        bg-violet-50
-        dark:bg-slate-900
-        text-slate-800
-        dark:text-slate-100
-        font-[Poppins]
-        transition-all
-        duration-300
-    "
->
-
-<div class="flex min-h-screen">
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 flex min-h-screen">

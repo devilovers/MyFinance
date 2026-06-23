@@ -1,43 +1,46 @@
 const btn = document.getElementById('darkButton');
 const icon = document.getElementById('darkIcon');
 
-const prefersDark = window.matchMedia(
-    '(prefers-color-scheme: dark)'
-).matches;
-
-function setTheme(theme) {
+function updateIconTheme(theme) {
+    if (!icon) return;
     if (theme === 'dark') {
-        document.documentElement.classList.add('dark');
-
-        if (icon) {
-            icon.classList.remove('fa-moon');
-            icon.classList.add('fa-sun');
-        }
+        icon.classList.remove('fa-moon');
+        icon.classList.add('fa-sun');
     } else {
-        document.documentElement.classList.remove('dark');
-
-        if (icon) {
-            icon.classList.remove('fa-sun');
-            icon.classList.add('fa-moon');
-        }
+        icon.classList.remove('fa-sun');
+        icon.classList.add('fa-moon');
     }
 }
 
-let savedTheme = localStorage.getItem('theme');
-
-if (!savedTheme) {
-    savedTheme = prefersDark ? 'dark' : 'light';
-    localStorage.setItem('theme', savedTheme);
-}
-
-setTheme(savedTheme);
+const activeTheme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+updateIconTheme(activeTheme);
 
 btn?.addEventListener('click', () => {
-    const isDark =
-        document.documentElement.classList.contains('dark');
-
+    const isDark = document.documentElement.classList.contains('dark');
     const newTheme = isDark ? 'light' : 'dark';
 
     localStorage.setItem('theme', newTheme);
-    setTheme(newTheme);
+    
+    if (newTheme === 'dark') {
+        document.documentElement.classList.add('dark');
+        document.documentElement.style.backgroundColor = '#020617';
+    } else {
+        document.documentElement.classList.remove('dark');
+        document.documentElement.style.backgroundColor = '#f8fafc';
+    }
+    
+    updateIconTheme(newTheme);
+});
+
+document.querySelectorAll('button, .btn-animate, input[type="submit"]').forEach(button => {
+    button.addEventListener('mousedown', () => {
+        button.style.transform = 'scale(0.95)';
+        button.style.transition = 'transform 0.05s ease';
+    });
+    button.addEventListener('mouseup', () => {
+        button.style.transform = '';
+    });
+    button.addEventListener('mouseleave', () => {
+        button.style.transform = '';
+    });
 });
