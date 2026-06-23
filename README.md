@@ -24,7 +24,6 @@ The application allows users to track their financial targets, manage transactio
 
 ## 🚀 Features
 
-* 🔐 User authentication
 * 📈 Financial target tracking
 * 💳 Transaction management
 * 📋 Debt and Investment tracking
