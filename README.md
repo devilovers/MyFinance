@@ -67,13 +67,25 @@ myfinance/
 ├── index.php
 └── README.md
 
+```
+
+## 🎯 Learning Goals
+
+* Understanding PHP and MySQL integration
+* Learning session management
+* Practicing database management
+* Building a complete responsive web application from scratch
+
 ---
 
-👩🏻‍💻 Author
-Nur Islami Sabila
+## 👩🏻‍💻 Author
+
+**Nur Islami Sabila**
 
 Frontend Developer & Informatics Student Candidate from Indonesia 🇮🇩
 
-"Learning by building, growing by creating."
+> "Learning by building, growing by creating."
+
+---
 
 ⭐ If you like this project, don't forget to give it a star.
