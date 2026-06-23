@@ -79,18 +79,16 @@ include '../includes/navbar.php';
 
 </div>
 
-<!-- Grafik -->
 <div class="card mt-6">
     <div class="flex items-center justify-between mb-5">
         <h2 class="text-xl font-semibold dark:text-white">
-            Perbandingan Pemasukan & Pengeluaran
+            Alokasi Keuangan & Penggunaan Dana
         </h2>
     </div>
 
     <canvas id="financeChart"></canvas>
 </div>
 
-<!-- Notifikasi Utang -->
 <?php if (mysqli_num_rows($notifikasi) > 0): ?>
 
 <div class="card mt-6">
@@ -169,17 +167,23 @@ new Chart(ctx, {
     type: 'doughnut',
     data: {
         labels: [
-            'Pemasukan',
-            'Pengeluaran'
+            'Sisa Saldo',
+            'Pengeluaran',
+            'Tabungan',
+            'Investasi'
         ],
         datasets: [{
             data: [
-                <?= $pemasukan ?>,
-                <?= $pengeluaran ?>
+                <?= $saldo ?>,
+                <?= $pengeluaran ?>,
+                <?= $tabungan ?>,
+                <?= $investasi ?>
             ],
             backgroundColor: [
-                '#86EFAC',
-                '#FCA5A5'
+                '#86EFAC', // Sisa Saldo
+                '#FCA5A5', // Pengeluaran
+                '#93C5FD', // Tabungan
+                '#FDE047'  // Investasi
             ],
             borderWidth: 0
         }]

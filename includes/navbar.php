@@ -40,7 +40,7 @@
                 <input
                     type="text"
                     id="searchGlobal"
-                    placeholder="Cari transaksi..."
+                    placeholder="Pencarian..."
                     class="
                         w-72
                         pl-11

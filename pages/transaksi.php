@@ -232,7 +232,31 @@ include '../includes/navbar.php';
                 </td>
                 <td class="p-4 text-center">
 
-   <button
+<div class="flex justify-center gap-2">
+
+<button
+    type="button"
+    class="
+        btnEdit
+        bg-amber-400
+        hover:bg-amber-500
+        text-white
+        px-3
+        py-2
+        rounded-xl
+        transition
+    "
+    data-id="<?= $t['id'] ?>"
+    data-jenis="<?= $t['jenis'] ?>"
+    data-kategori="<?= $t['kategori'] ?>"
+    data-jumlah="<?= $t['jumlah'] ?>"
+    data-tanggal="<?= $t['tanggal'] ?>"
+    data-deskripsi="<?= htmlspecialchars($t['deskripsi']) ?>"
+>
+    <i class="fa-solid fa-pen"></i>
+</button>
+
+<button
     type="button"
     class="
         btnHapus
@@ -248,6 +272,8 @@ include '../includes/navbar.php';
 >
     <i class="fa-solid fa-trash"></i>
 </button>
+
+</div>
 
 </td>
             </tr>
@@ -313,6 +339,8 @@ include '../includes/navbar.php';
                 <i class="fa-solid fa-xmark"></i>
             </button>
         </div>
+
+        
 
         <form
     action="../process/transaksi/tambah.php"
@@ -518,6 +546,198 @@ include '../includes/navbar.php';
 
 </div>
 
+
+<div
+    id="modalEdit"
+    class="
+        hidden
+        fixed
+        inset-0
+        bg-black/50
+        z-50
+        flex
+        items-center
+        justify-center
+        p-5
+    "
+>
+
+<div
+    class="
+        bg-white
+        dark:bg-slate-800
+        rounded-3xl
+        p-8
+        w-full
+        max-w-2xl
+    "
+>
+
+<h2 class="text-2xl font-bold mb-6 dark:text-white">
+    Edit Transaksi
+</h2>
+
+<form
+    action="../process/transaksi/edit.php"
+    method="POST"
+>
+
+<input
+    type="hidden"
+    name="id"
+    id="edit_id"
+>
+
+<div class="grid md:grid-cols-2 gap-5">
+
+<div>
+<label class="font-medium dark:text-white">
+Jenis
+</label>
+
+<select
+    name="jenis"
+    id="edit_jenis"
+    class="
+        w-full
+        mt-2
+        p-3
+        rounded-xl
+        border
+        dark:bg-slate-700
+        dark:text-white
+    "
+>
+    <option value="Pemasukan">
+        Pemasukan
+    </option>
+
+    <option value="Pengeluaran">
+        Pengeluaran
+    </option>
+</select>
+</div>
+
+<div>
+<label class="font-medium dark:text-white">
+Kategori
+</label>
+
+<input
+    type="text"
+    name="kategori"
+    id="edit_kategori"
+    class="
+        w-full
+        mt-2
+        p-3
+        rounded-xl
+        border
+        dark:bg-slate-700
+        dark:text-white
+    "
+>
+</div>
+
+<div>
+<label class="font-medium dark:text-white">
+Jumlah
+</label>
+
+<input
+    type="text"
+    name="jumlah"
+    id="edit_jumlah"
+    class="
+        w-full
+        mt-2
+        p-3
+        rounded-xl
+        border
+        dark:bg-slate-700
+        dark:text-white
+    "
+>
+</div>
+
+<div>
+<label class="font-medium dark:text-white">
+Tanggal
+</label>
+
+<input
+    type="date"
+    name="tanggal"
+    id="edit_tanggal"
+    class="
+        w-full
+        mt-2
+        p-3
+        rounded-xl
+        border
+        dark:bg-slate-700
+        dark:text-white
+    "
+>
+</div>
+
+</div>
+
+<div class="mt-5">
+<label class="font-medium dark:text-white">
+Deskripsi
+</label>
+
+<textarea
+    name="deskripsi"
+    id="edit_deskripsi"
+    rows="4"
+    class="
+        w-full
+        mt-2
+        p-3
+        rounded-xl
+        border
+        dark:bg-slate-700
+        dark:text-white
+    "
+></textarea>
+</div>
+
+<div class="flex justify-end gap-3 mt-8">
+
+<button
+    type="button"
+    id="closeEdit"
+    class="
+        px-5
+        py-3
+        rounded-xl
+        bg-gray-300
+    "
+>
+    Batal
+</button>
+
+<button
+    class="
+        px-5
+        py-3
+        rounded-xl
+        bg-violet-500
+        text-white
+    "
+>
+    Simpan
+</button>
+
+</div>
+
+</form>
+
+</div>
+</div>
+
 <script>
 const btnTambah = document.getElementById('btnTambah');
 const modal = document.getElementById('modalTransaksi');
@@ -621,6 +841,68 @@ document.querySelectorAll('.btnHapus')
 
     });
 
+});
+
+const modalEdit =
+    document.getElementById('modalEdit');
+
+document
+.querySelectorAll('.btnEdit')
+.forEach(btn => {
+
+    btn.addEventListener('click', function () {
+
+        modalEdit.classList.remove('hidden');
+
+        document.getElementById('edit_id').value =
+            this.dataset.id;
+
+        document.getElementById('edit_jenis').value =
+            this.dataset.jenis;
+
+        document.getElementById('edit_kategori').value =
+            this.dataset.kategori;
+
+        document.getElementById('edit_jumlah').value =
+            new Intl.NumberFormat('id-ID')
+            .format(this.dataset.jumlah);
+
+        document.getElementById('edit_tanggal').value =
+            this.dataset.tanggal;
+
+        document.getElementById('edit_deskripsi').value =
+            this.dataset.deskripsi;
+    });
+
+});
+
+document
+.getElementById('closeEdit')
+.addEventListener('click', () => {
+
+    modalEdit.classList.add('hidden');
+
+});
+
+const editJumlah =
+    document.getElementById('edit_jumlah');
+
+editJumlah.addEventListener('input', function () {
+
+    let angka =
+        this.value.replace(/\D/g, '');
+
+    this.value =
+        new Intl.NumberFormat('id-ID')
+        .format(angka);
+});
+
+document
+.querySelector('#modalEdit form')
+.addEventListener('submit', function () {
+
+    editJumlah.value =
+        editJumlah.value.replace(/\./g, '');
 });
 </script>
 

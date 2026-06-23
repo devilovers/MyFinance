@@ -34,8 +34,8 @@ function totalPengeluaran($conn)
 function totalTabungan($conn)
 {
     $query = mysqli_query($conn, "
-        SELECT IFNULL(SUM(jumlah), 0) AS total
-        FROM detail_tabungan
+        SELECT IFNULL(SUM(terkumpul), 0) AS total
+        FROM tabungan
     ");
 
     $data = mysqli_fetch_assoc($query);
@@ -46,8 +46,8 @@ function totalTabungan($conn)
 function totalInvestasi($conn)
 {
     $query = mysqli_query($conn, "
-        SELECT IFNULL(SUM(jumlah), 0) AS total
-        FROM detail_investasi
+        SELECT IFNULL(SUM(terkumpul), 0) AS total
+        FROM investasi
     ");
 
     $data = mysqli_fetch_assoc($query);
@@ -72,13 +72,8 @@ function totalSaldo($conn)
 {
     $pemasukan = totalPemasukan($conn);
     $pengeluaran = totalPengeluaran($conn);
-    $tabungan = totalTabungan($conn);
-    $investasi = totalInvestasi($conn);
 
-    return $pemasukan
-            - $pengeluaran
-            - $tabungan
-            - $investasi;
+    return $pemasukan - $pengeluaran;
 }
 
 function utangJatuhTempo($conn)
