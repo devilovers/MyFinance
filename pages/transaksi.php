@@ -182,6 +182,7 @@ include '../includes/navbar.php';
                     </label>
                     <select
                         name="jenis"
+                        id="jenis"
                         class="w-full mt-1.5 px-3 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-400/20 focus:border-violet-400 transition-all"
                         required
                     >
@@ -194,13 +195,13 @@ include '../includes/navbar.php';
                     <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                         Kategori
                     </label>
-                    <input
-                        type="text"
+                    <select
                         name="kategori"
-                        placeholder="Contoh: Gaji, Makanan, Transportasi"
+                        id="kategori"
                         class="w-full mt-1.5 px-3 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-400/20 focus:border-violet-400 transition-all"
                         required
                     >
+                    </select>
                 </div>
 
                 <div>
@@ -300,13 +301,13 @@ include '../includes/navbar.php';
                     <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                         Kategori
                     </label>
-                    <input
-                        type="text"
+                    <select
                         name="kategori"
                         id="edit_kategori"
                         class="w-full mt-1.5 px-3 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-400/20 focus:border-violet-400 transition-all"
                         required
                     >
+                    </select>
                 </div>
 
                 <div>
@@ -371,8 +372,50 @@ include '../includes/navbar.php';
 const modal = document.getElementById('modalTambah');
 const modalEdit = document.getElementById('modalEdit');
 
+const opsiKategori = {
+    'Pemasukan': ['Gaji', 'Saku'],
+    'Pengeluaran': ['Keluarga', 'Makanan', 'Barang', 'Transportasi', 'Kesehatan', 'Kebutuhan', 'Keinginan', 'Belanja', 'Hiburan', 'Hadiah', 'Bepergian']
+};
+
+function updateKategoriOptions(jenisSelectId, kategoriSelectId, selectedValue = '') {
+    const jenisSelect = document.getElementById(jenisSelectId);
+    const kategoriSelect = document.getElementById(kategoriSelectId);
+    const jenis = jenisSelect.value;
+    
+    kategoriSelect.innerHTML = '';
+    
+    const defaultOption = document.createElement('option');
+    defaultOption.value = '';
+    defaultOption.textContent = 'Pilih Kategori';
+    defaultOption.disabled = true;
+    defaultOption.selected = true;
+    kategoriSelect.appendChild(defaultOption);
+    
+    if (opsiKategori[jenis]) {
+        opsiKategori[jenis].forEach(kat => {
+            const option = document.createElement('option');
+            option.value = kat;
+            option.textContent = kat;
+            if (selectedValue && kat.toLowerCase() === selectedValue.toLowerCase()) {
+                option.selected = true;
+                defaultOption.selected = false;
+            }
+            kategoriSelect.appendChild(option);
+        });
+    }
+}
+
+document.getElementById('jenis').addEventListener('change', () => {
+    updateKategoriOptions('jenis', 'kategori');
+});
+
+document.getElementById('edit_jenis').addEventListener('change', () => {
+    updateKategoriOptions('edit_jenis', 'edit_kategori');
+});
+
 document.getElementById('btnTambah').addEventListener('click', () => {
     modal.classList.remove('hidden');
+    updateKategoriOptions('jenis', 'kategori');
 });
 
 document.getElementById('btnBatal').addEventListener('click', () => {
@@ -429,7 +472,9 @@ document.querySelectorAll('.btnEdit').forEach(btn => {
         modalEdit.classList.remove('hidden');
         document.getElementById('edit_id').value = this.dataset.id;
         document.getElementById('edit_jenis').value = this.dataset.jenis;
-        document.getElementById('edit_kategori').value = this.dataset.kategori;
+        
+        updateKategoriOptions('edit_jenis', 'edit_kategori', this.dataset.kategori);
+        
         document.getElementById('edit_jumlah').value = new Intl.NumberFormat('id-ID').format(this.dataset.jumlah);
         document.getElementById('edit_tanggal').value = this.dataset.tanggal;
         document.getElementById('edit_deskripsi').value = this.dataset.deskripsi;
