@@ -33,46 +33,6 @@
 
         <div class="flex items-center gap-4">
 
-            <div class="relative hidden md:block">
-                <i
-                    class="
-                        fa-solid fa-magnifying-glass
-                        absolute
-                        left-4
-                        top-1/2
-                        -translate-y-1/2
-                        text-slate-400
-                        text-sm
-                    "
-                ></i>
-
-                <input
-                    type="text"
-                    id="searchGlobal"
-                    placeholder="Pencarian..."
-                    class="
-                        w-64
-                        pl-11
-                        pr-4
-                        py-2.5
-                        text-sm
-                        rounded-xl
-                        border
-                        border-slate-200
-                        dark:border-slate-700
-                        bg-slate-50
-                        dark:bg-slate-700/40
-                        dark:text-white
-                        focus:outline-none
-                        focus:ring-2
-                        focus:ring-violet-400/20
-                        focus:border-violet-400
-                        transition-all
-                        duration-200
-                    "
-                >
-            </div>
-
             <div
                 class="
                     hidden lg:flex
