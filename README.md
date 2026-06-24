@@ -44,16 +44,6 @@ The application allows users to track their financial targets, manage transactio
 
 ---
 
-## 📸 Screenshots
-
-### Dashboard
-
-<p align="center">
-  <img src="screenshots/dashboard.png" width="900">
-</p>
-
----
-
 ## 📂 Project Structure
 
 ```bash
