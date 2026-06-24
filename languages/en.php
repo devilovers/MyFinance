@@ -105,5 +105,11 @@ $lang = [
     'kategori_hiburan' => 'Entertainment',
     'kategori_hadiah' => 'Gifts',
     'kategori_bepergian' => 'Travel',
-    'teks_hapus_umum' => 'Deleted data cannot be recovered.'
+    'teks_hapus_umum' => 'Deleted data cannot be recovered.',
+    'tambah_utang' => 'Add Debt',
+    'nama_utang_pemberi' => 'Debt Name / Lender',
+    'contoh_pemberi_utang' => 'Example: Bank Loan, Debt to Budi',
+    'jumlah_utang' => 'Debt Amount (Rp)',
+    'tanggal_jatuh_tempo' => 'Due Date',
+    'status_pelunasan' => 'Repayment Status'
 ];

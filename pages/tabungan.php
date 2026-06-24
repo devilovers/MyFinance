@@ -35,7 +35,6 @@ include '../includes/navbar.php';
 <?php if (mysqli_num_rows($data) > 0): ?>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <?php while ($d = mysqli_fetch_assoc($data)): 
-            // Mengatasi perbedaan penamaan nama kolom database secara aman
             $target_dana = $d['target_dana'] ?? ($d['target'] ?? 0);
             $dana_terkumpul = $d['dana_terkumpul'] ?? ($d['terkumpul'] ?? 0);
             $tanggal_target = $d['tanggal_target'] ?? ($d['tanggal'] ?? date('Y-m-d'));
@@ -59,7 +58,7 @@ include '../includes/navbar.php';
                             </button>
                             <button 
                                 type="button"
-                                class="btnEdit text-slate-400 hover:text-violet-500 p-1 rounded-md transition-colors"
+                                class="btnEdit field-target-btn text-slate-400 hover:text-violet-500 p-1 rounded-md transition-colors"
                                 data-id="<?= $d['id'] ?>"
                                 data-nama_target="<?= htmlspecialchars($d['nama_target'] ?? ($d['nama'] ?? '')) ?>"
                                 data-target_dana="<?= $target_dana ?>"
@@ -194,6 +193,11 @@ include '../includes/navbar.php';
                 </div>
             </div>
 
+            <input type="hidden" name="target" id="alt_target">
+            <input type="hidden" name="terkumpul" id="alt_terkumpul">
+            <input type="hidden" name="tanggal" id="alt_tanggal">
+            <input type="hidden" name="nama" id="alt_nama">
+
             <div class="flex justify-end gap-2.5 mt-6">
                 <button
                     type="button"
@@ -251,7 +255,7 @@ include '../includes/navbar.php';
                     </label>
                     <input
                         type="text"
-                        id="edit_target_dana"
+                        id="edit_target"
                         name="target_dana"
                         class="w-full mt-1.5 px-3 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-400/20 focus:border-violet-400 transition-all"
                         required
@@ -264,7 +268,7 @@ include '../includes/navbar.php';
                     </label>
                     <input
                         type="text"
-                        id="edit_dana_terkumpul"
+                        id="edit_terkumpul"
                         name="dana_terkumpul"
                         class="w-full mt-1.5 px-3 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-400/20 focus:border-violet-400 transition-all"
                         required
@@ -278,12 +282,17 @@ include '../includes/navbar.php';
                     <input
                         type="date"
                         name="tanggal_target"
-                        id="edit_tanggal_target"
+                        id="edit_tanggal"
                         class="w-full mt-1.5 px-3 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-400/20 focus:border-violet-400 transition-all"
                         required
                     >
                 </div>
             </div>
+
+            <input type="hidden" name="target" id="alt_edit_target">
+            <input type="hidden" name="terkumpul" id="alt_edit_terkumpul">
+            <input type="hidden" name="tanggal" id="alt_edit_tanggal">
+            <input type="hidden" name="nama" id="alt_edit_nama">
 
             <div class="flex justify-end gap-2.5 mt-6">
                 <button
@@ -350,17 +359,37 @@ function formatRupiah(input) {
 
 formatRupiah(document.getElementById('target_dana'));
 formatRupiah(document.getElementById('dana_terkumpul'));
-formatRupiah(document.getElementById('edit_target_dana'));
-formatRupiah(document.getElementById('edit_dana_terkumpul'));
+formatRupiah(document.getElementById('edit_target'));
+formatRupiah(document.getElementById('edit_terkumpul'));
 
-document.querySelector('#modalTambah form').addEventListener('submit', () => {
-    document.getElementById('target_dana').value = document.getElementById('target_dana').value.replace(/\./g, '');
-    document.getElementById('dana_terkumpul').value = document.getElementById('dana_terkumpul').value.replace(/\./g, '');
+document.querySelector('#modalTambah form').addEventListener('submit', function() {
+    let rawTarget = document.getElementById('target_dana').value.replace(/\./g, '');
+    let rawTerkumpul = document.getElementById('dana_terkumpul').value.replace(/\./g, '');
+    let rawNama = this.querySelector('input[name="nama_target"]').value;
+    let rawTanggal = this.querySelector('input[name="tanggal_target"]').value;
+
+    document.getElementById('target_dana').value = rawTarget;
+    document.getElementById('dana_terkumpul').value = rawTerkumpul;
+
+    document.getElementById('alt_target').value = rawTarget;
+    document.getElementById('alt_terkumpul').value = rawTerkumpul;
+    document.getElementById('alt_nama').value = rawNama;
+    document.getElementById('alt_tanggal').value = rawTanggal;
 });
 
-document.querySelector('#modalEdit form').addEventListener('submit', () => {
-    document.getElementById('edit_target_dana').value = document.getElementById('edit_target_dana').value.replace(/\./g, '');
-    document.getElementById('edit_dana_terkumpul').value = document.getElementById('edit_dana_terkumpul').value.replace(/\./g, '');
+document.querySelector('#modalEdit form').addEventListener('submit', function() {
+    let rawTarget = document.getElementById('edit_target').value.replace(/\./g, '');
+    let rawTerkumpul = document.getElementById('edit_terkumpul').value.replace(/\./g, '');
+    let rawNama = document.getElementById('edit_nama_target').value;
+    let rawTanggal = document.getElementById('edit_tanggal').value;
+
+    document.getElementById('edit_target').value = rawTarget;
+    document.getElementById('edit_terkumpul').value = rawTerkumpul;
+
+    document.getElementById('alt_edit_target').value = rawTarget;
+    document.getElementById('alt_edit_terkumpul').value = rawTerkumpul;
+    document.getElementById('alt_edit_nama').value = rawNama;
+    document.getElementById('alt_edit_tanggal').value = rawTanggal;
 });
 
 document.querySelectorAll('.btnEdit').forEach(btn => {
@@ -368,9 +397,9 @@ document.querySelectorAll('.btnEdit').forEach(btn => {
         modalEdit.classList.remove('hidden');
         document.getElementById('edit_id').value = this.dataset.id;
         document.getElementById('edit_nama_target').value = this.dataset.nama_target;
-        document.getElementById('edit_target_dana').value = new Intl.NumberFormat('id-ID').format(this.dataset.target_dana);
-        document.getElementById('edit_dana_terkumpul').value = new Intl.NumberFormat('id-ID').format(this.dataset.dana_terkumpul);
-        document.getElementById('edit_tanggal_target').value = this.dataset.tanggal_target;
+        document.getElementById('edit_target').value = new Intl.NumberFormat('id-ID').format(this.dataset.target_dana);
+        document.getElementById('edit_terkumpul').value = new Intl.NumberFormat('id-ID').format(this.dataset.dana_terkumpul);
+        document.getElementById('edit_tanggal').value = this.dataset.tanggal_target;
     });
 });
 

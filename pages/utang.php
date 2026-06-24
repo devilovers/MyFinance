@@ -32,99 +32,80 @@ include '../includes/navbar.php';
     </button>
 </div>
 
-<div class="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/50 rounded-2xl shadow-sm overflow-hidden">
-    <div class="overflow-x-auto">
-        <table class="w-full text-left border-collapse">
-            <thead>
-                <tr class="border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/20">
-                    <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500"><?= $lang['nama_utang_pinjaman'] ?? 'Nama Utang / Pinjaman'; ?></th>
-                    <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500"><?= $lang['jumlah'] ?? 'Jumlah'; ?></th>
-                    <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500"><?= $lang['jatuh_tempo'] ?? 'Jatuh Tempo'; ?></th>
-                    <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500"><?= $lang['status'] ?? 'Status'; ?></th>
-                    <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500 text-right"><?= $lang['aksi'] ?? 'Aksi'; ?></th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-slate-100 dark:divide-slate-800/60">
-                <?php if (mysqli_num_rows($data) > 0): ?>
-                    <?php while ($d = mysqli_fetch_assoc($data)): ?>
-                        <tr class="hover:bg-slate-50/40 dark:hover:bg-slate-800/20 transition-colors duration-150">
-                            <td class="px-6 py-4 text-sm font-medium text-slate-800 dark:text-slate-200 whitespace-nowrap">
-                                <?= htmlspecialchars($d['nama_utang']) ?>
-                            </td>
-                            <td class="px-6 py-4 text-sm font-bold text-slate-700 dark:text-slate-300 whitespace-nowrap">
-                                <?= rupiah($d['jumlah']) ?>
-                            </td>
-                            <td class="px-6 py-4 text-sm text-slate-500 dark:text-slate-400 whitespace-nowrap">
-                                <?php 
-                                if ($d['status'] == 'Belum Lunas') {
-                                    $today = new DateTime();
-                                    $dueDate = new DateTime($d['jatuh_tempo']);
-                                    $interval = $today->diff($dueDate);
-                                    $days = (int)$dueDate->diff($today)->format('%r%a');
+<?php if (mysqli_num_rows($data) > 0): ?>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <?php while ($d = mysqli_fetch_assoc($data)): 
+            $status = $d['status'] ?? 'Belum Lunas';
+            $isLunas = (strtolower($status) === 'lunas' || $status == 1 || strtolower($status) === 'paid');
+            
+            $jumlah_dana = $d['jumlah'] ?? ($d['jumlah_utang'] ?? 0);
+            $jatuh_tempo = $d['jatuh_tempo'] ?? ($d['tanggal'] ?? date('Y-m-d'));
+            $nama_utang = $d['nama_utang'] ?? ($d['deskripsi'] ?? ($d['nama'] ?? '-'));
+        ?>
+            <div class="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/50 rounded-2xl p-5 shadow-sm relative group flex flex-col justify-between min-h-[180px]">
+                
+                <div>
+                    <div class="flex items-start justify-between gap-4 mb-2">
+                        <h3 class="font-bold text-slate-800 dark:text-white text-base tracking-tight leading-snug line-clamp-2">
+                            <?= htmlspecialchars($nama_utang) ?>
+                        </h3>
+                        <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button 
+                                type="button"
+                                class="btnEdit text-slate-400 hover:text-violet-500 p-1 rounded-md transition-colors"
+                                data-id="<?= $d['id'] ?>"
+                                data-nama_utang="<?= htmlspecialchars($nama_utang) ?>"
+                                data-jumlah="<?= $jumlah_dana ?>"
+                                data-jatuh_tempo="<?= $jatuh_tempo ?>"
+                                data-status="<?= $status ?>"
+                            >
+                                <i class="fa-solid fa-pen text-xs"></i>
+                            </button>
+                            <button 
+                                type="button"
+                                class="btnHapus text-slate-400 hover:text-red-500 p-1 rounded-md transition-colors"
+                                data-id="<?= $d['id'] ?>"
+                            >
+                                <i class="fa-solid fa-trash text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
 
-                                    if ($days > 0) {
-                                        echo "<span class='text-red-500 font-semibold'>" . date('d M Y', strtotime($d['jatuh_tempo'])) . " (" . ($lang['lewat'] ?? 'Lewat') . " " . abs($days) . " " . ($lang['hari_lagi'] ?? 'hari') . ")</span>";
-                                    } elseif ($days == 0) {
-                                        echo "<span class='text-amber-500 font-semibold'>" . date('d M Y', strtotime($d['jatuh_tempo'])) . " (" . ($lang['hari_ini'] ?? 'Jatuh tempo hari ini') . ")</span>";
-                                    } else {
-                                        echo "<span>" . date('d M Y', strtotime($d['jatuh_tempo'])) . " (" . abs($days) . " " . ($lang['hari_lagi'] ?? 'hari lagi') . ")</span>";
-                                    }
-                                } else {
-                                    echo "<span class='line-through text-slate-400'>" . date('d M Y', strtotime($d['jatuh_tempo'])) . "</span>";
-                                }
-                                ?>
-                            </td>
-                            <td class="px-6 py-4 text-sm whitespace-nowrap">
-                                <?php if ($d['status'] == 'Lunas'): ?>
-                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-green-50 text-green-600 dark:bg-green-950/30 dark:text-green-400">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> <?= $lang['lunas'] ?? 'Lunas'; ?>
-                                    </span>
-                                <?php else: ?>
-                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-red-50 text-red-600 dark:bg-red-950/30 dark:text-red-400">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> <?= $lang['belum_lunas'] ?? 'Belum Lunas'; ?>
-                                    </span>
-                                <?php endif; ?>
-                            </td>
-                            <td class="px-6 py-4 text-sm text-right whitespace-nowrap">
-                                <div class="flex items-center justify-end gap-1.5">
-                                    <button
-                                        type="button"
-                                        class="btnEdit border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 w-8 h-8 rounded-lg flex items-center justify-center transition-colors"
-                                        data-id="<?= $d['id'] ?>"
-                                        data-nama_utang="<?= htmlspecialchars($d['nama_utang']) ?>"
-                                        data-jumlah="<?= $d['jumlah'] ?>"
-                                        data-jatuh_tempo="<?= $d['jatuh_tempo'] ?>"
-                                        data-status="<?= $d['status'] ?>"
-                                    >
-                                        <i class="fa-solid fa-pen text-xs"></i>
-                                    </button>
-                                    <button
-                                        type="button"
-                                        class="btnHapus bg-red-50 dark:bg-red-950/20 text-red-500 hover:bg-red-100 dark:hover:bg-red-950/40 w-8 h-8 rounded-lg flex items-center justify-center transition-colors"
-                                        data-id="<?= $d['id'] ?>"
-                                    >
-                                        <i class="fa-solid fa-trash text-xs"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                    <?php endwhile; ?>
-                <?php else: ?>
-                    <tr>
-                        <td colspan="5" class="px-6 py-12 text-center">
-                            <span class="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-slate-400 mx-auto mb-3 text-base">
-                                <i class="fa-solid fa-folder-open"></i>
-                            </span>
-                            <p class="text-sm font-medium text-slate-400 dark:text-slate-500">
-                                <?= $lang['belum_ada_utang'] ?? 'Belum ada catatan utang yang ditambahkan.'; ?>
-                            </p>
-                        </td>
-                    </tr>
-                <?php endif; ?>
-            </tbody>
-        </table>
+                    <div class="text-xl font-black text-slate-800 dark:text-white mb-4">
+                        <?= rupiah($jumlah_dana) ?>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between text-xs pt-2 border-t border-slate-50 dark:border-slate-800/60">
+                    <span class="inline-flex items-center gap-1 text-slate-400 dark:text-slate-500 font-medium">
+                        <i class="fa-regular fa-calendar text-[10px]"></i>
+                        <?= date('d M Y', strtotime($jatuh_tempo)) ?>
+                    </span>
+                    
+                    <?php if ($isLunas): ?>
+                        <span class="font-bold text-emerald-500 bg-emerald-50 dark:bg-emerald-950/30 px-2.5 py-1 rounded-full text-[11px]">
+                            <?= $lang['lunas'] ?? 'Lunas'; ?>
+                        </span>
+                    <?php else: ?>
+                        <span class="font-bold text-rose-500 bg-rose-50 dark:bg-rose-950/30 px-2.5 py-1 rounded-full text-[11px]">
+                            <?= $lang['belum_lunas'] ?? 'Belum Lunas'; ?>
+                        </span>
+                    <?php endif; ?>
+                </div>
+
+            </div>
+        <?php endwhile; ?>
     </div>
-</div>
+<?php else: ?>
+    <div class="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/50 rounded-2xl shadow-sm p-16 text-center">
+        <span class="w-12 h-12 rounded-2xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-slate-400 mx-auto mb-4 text-xl">
+            <i class="fa-solid fa-hand-holding-dollar"></i>
+        </span>
+        <h3 class="text-base font-bold text-slate-700 dark:text-slate-300 mb-1">
+            <?= $lang['belum_ada_utang'] ?? 'Belum ada catatan utang yang ditambahkan.'; ?>
+        </h3>
+    </div>
+<?php endif; ?>
 
 <div
     id="modalTambah"
@@ -150,7 +131,7 @@ include '../includes/navbar.php';
                     <input
                         type="text"
                         name="nama_utang"
-                        placeholder="<?= $lang['contoh_utang'] ?? 'Contoh: Pinjaman Bank, Hutang Teman'; ?>"
+                        placeholder="<?= $lang['contoh_utang'] ?? 'Contoh: Pinjaman Bank, Utang Teman'; ?>"
                         class="w-full mt-1.5 px-3 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-400/20 focus:border-violet-400 transition-all"
                         required
                     >
@@ -158,7 +139,7 @@ include '../includes/navbar.php';
 
                 <div>
                     <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                        <?= $lang['jumlah'] ?? 'Jumlah'; ?> (Rp)
+                        <?= $lang['jumlah_utang_rp'] ?? 'Jumlah Utang (Rp)'; ?>
                     </label>
                     <input
                         type="text"
@@ -183,6 +164,10 @@ include '../includes/navbar.php';
                     >
                 </div>
             </div>
+
+            <input type="hidden" name="jumlah_utang" id="alt_jumlah">
+            <input type="hidden" name="tanggal" id="alt_tanggal">
+            <input type="hidden" name="deskripsi" id="alt_deskripsi">
 
             <div class="flex justify-end gap-2.5 mt-6">
                 <button
@@ -237,7 +222,7 @@ include '../includes/navbar.php';
 
                 <div>
                     <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                        <?= $lang['jumlah'] ?? 'Jumlah'; ?> (Rp)
+                        <?= $lang['jumlah_utang_rp'] ?? 'Jumlah Utang (Rp)'; ?>
                     </label>
                     <input
                         type="text"
@@ -276,6 +261,10 @@ include '../includes/navbar.php';
                     </select>
                 </div>
             </div>
+
+            <input type="hidden" name="jumlah_utang" id="alt_edit_jumlah">
+            <input type="hidden" name="tanggal" id="alt_edit_tanggal">
+            <input type="hidden" name="deskripsi" id="alt_edit_deskripsi">
 
             <div class="flex justify-end gap-2.5 mt-6">
                 <button
@@ -333,6 +322,7 @@ modalEdit.addEventListener('click', (e) => {
 });
 
 function formatRupiah(input) {
+    if(!input) return;
     input.addEventListener('input', function () {
         let angka = this.value.replace(/\D/g, '');
         this.value = new Intl.NumberFormat('id-ID').format(angka);
@@ -340,17 +330,30 @@ function formatRupiah(input) {
 }
 
 formatRupiah(document.getElementById('jumlah'));
+formatRupiah(document.getElementById('edit_jumlah'));
 
-const editJumlah = document.getElementById('edit_jumlah');
-formatRupiah(editJumlah);
+document.querySelector('#modalTambah form').addEventListener('submit', function() {
+    let rawJumlah = document.getElementById('jumlah').value.replace(/\./g, '');
+    let rawNama = this.querySelector('input[name="nama_utang"]').value;
+    let rawTanggal = this.querySelector('input[name="jatuh_tempo"]').value;
 
-document.querySelector('#modalTambah form').addEventListener('submit', () => {
-    const jumlahInput = document.getElementById('jumlah');
-    jumlahInput.value = jumlahInput.value.replace(/\./g, '');
+    document.getElementById('jumlah').value = rawJumlah;
+
+    document.getElementById('alt_jumlah').value = rawJumlah;
+    document.getElementById('alt_tanggal').value = rawTanggal;
+    document.getElementById('alt_deskripsi').value = rawNama;
 });
 
-document.querySelector('#modalEdit form').addEventListener('submit', () => {
-    editJumlah.value = editJumlah.value.replace(/\./g, '');
+document.querySelector('#modalEdit form').addEventListener('submit', function() {
+    let rawJumlah = document.getElementById('edit_jumlah').value.replace(/\./g, '');
+    let rawNama = document.getElementById('edit_nama_utang').value;
+    let rawTanggal = document.getElementById('edit_jatuh_tempo').value;
+
+    document.getElementById('edit_jumlah').value = rawJumlah;
+
+    document.getElementById('alt_edit_jumlah').value = rawJumlah;
+    document.getElementById('alt_edit_tanggal').value = rawTanggal;
+    document.getElementById('alt_edit_deskripsi').value = rawNama;
 });
 
 document.querySelectorAll('.btnEdit').forEach(btn => {

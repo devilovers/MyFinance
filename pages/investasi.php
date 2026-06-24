@@ -35,7 +35,6 @@ include '../includes/navbar.php';
 <?php if (mysqli_num_rows($data) > 0): ?>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <?php while ($d = mysqli_fetch_assoc($data)): 
-            // Handle toleransi jika nama kolom di database berbeda (menggunakan ?? untuk fallback)
             $target_dana = $d['target_dana'] ?? ($d['target'] ?? 0);
             $dana_terkumpul = $d['dana_terkumpul'] ?? ($d['terkumpul'] ?? 0);
             $tanggal_target = $d['tanggal_target'] ?? ($d['tanggal'] ?? date('Y-m-d'));
@@ -55,9 +54,9 @@ include '../includes/navbar.php';
                                 class="btnEdit text-slate-400 hover:text-violet-500 p-1 rounded-md transition-colors"
                                 data-id="<?= $d['id'] ?>"
                                 data-nama_target="<?= htmlspecialchars($d['nama_target'] ?? ($d['nama'] ?? '')) ?>"
-                                data-target="<?= $target_dana ?>"
-                                data-terkumpul="<?= $dana_terkumpul ?>"
-                                data-tanggal="<?= $tanggal_target ?>"
+                                data-target_dana="<?= $target_dana ?>"
+                                data-dana_terkumpul="<?= $dana_terkumpul ?>"
+                                data-tanggal_target="<?= $tanggal_target ?>"
                             >
                                 <i class="fa-solid fa-pen text-xs"></i>
                             </button>
@@ -115,7 +114,6 @@ include '../includes/navbar.php';
     </div>
 <?php endif; ?>
 
-<!-- Modal Tambah -->
 <div
     id="modalTambah"
     class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 transition-all"
@@ -188,6 +186,11 @@ include '../includes/navbar.php';
                 </div>
             </div>
 
+            <input type="hidden" name="target" id="alt_target">
+            <input type="hidden" name="terkumpul" id="alt_terkumpul">
+            <input type="hidden" name="tanggal" id="alt_tanggal">
+            <input type="hidden" name="nama" id="alt_nama">
+
             <div class="flex justify-end gap-2.5 mt-6">
                 <button
                     type="button"
@@ -207,7 +210,6 @@ include '../includes/navbar.php';
     </div>
 </div>
 
-<!-- Modal Edit -->
 <div
     id="modalEdit"
     class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 transition-all"
@@ -280,6 +282,11 @@ include '../includes/navbar.php';
                 </div>
             </div>
 
+            <input type="hidden" name="target" id="alt_edit_target">
+            <input type="hidden" name="terkumpul" id="alt_edit_terkumpul">
+            <input type="hidden" name="tanggal" id="alt_edit_tanggal">
+            <input type="hidden" name="nama" id="alt_edit_nama">
+
             <div class="flex justify-end gap-2.5 mt-6">
                 <button
                     type="button"
@@ -336,6 +343,7 @@ modalEdit.addEventListener('click', (e) => {
 });
 
 function formatRupiah(input) {
+    if(!input) return;
     input.addEventListener('input', function () {
         let angka = this.value.replace(/\D/g, '');
         this.value = new Intl.NumberFormat('id-ID').format(angka);
@@ -347,14 +355,34 @@ formatRupiah(document.getElementById('dana_terkumpul'));
 formatRupiah(document.getElementById('edit_target'));
 formatRupiah(document.getElementById('edit_terkumpul'));
 
-document.querySelector('#modalTambah form').addEventListener('submit', () => {
-    document.getElementById('target_dana').value = document.getElementById('target_dana').value.replace(/\./g, '');
-    document.getElementById('dana_terkumpul').value = document.getElementById('dana_terkumpul').value.replace(/\./g, '');
+document.querySelector('#modalTambah form').addEventListener('submit', function() {
+    let rawTarget = document.getElementById('target_dana').value.replace(/\./g, '');
+    let rawTerkumpul = document.getElementById('dana_terkumpul').value.replace(/\./g, '');
+    let rawNama = this.querySelector('input[name="nama_target"]').value;
+    let rawTanggal = this.querySelector('input[name="tanggal_target"]').value;
+
+    document.getElementById('target_dana').value = rawTarget;
+    document.getElementById('dana_terkumpul').value = rawTerkumpul;
+
+    document.getElementById('alt_target').value = rawTarget;
+    document.getElementById('alt_terkumpul').value = rawTerkumpul;
+    document.getElementById('alt_nama').value = rawNama;
+    document.getElementById('alt_tanggal').value = rawTanggal;
 });
 
-document.querySelector('#modalEdit form').addEventListener('submit', () => {
-    document.getElementById('edit_target').value = document.getElementById('edit_target').value.replace(/\./g, '');
-    document.getElementById('edit_terkumpul').value = document.getElementById('edit_terkumpul').value.replace(/\./g, '');
+document.querySelector('#modalEdit form').addEventListener('submit', function() {
+    let rawTarget = document.getElementById('edit_target').value.replace(/\./g, '');
+    let rawTerkumpul = document.getElementById('edit_terkumpul').value.replace(/\./g, '');
+    let rawNama = document.getElementById('edit_nama_target').value;
+    let rawTanggal = document.getElementById('edit_tanggal').value;
+
+    document.getElementById('edit_target').value = rawTarget;
+    document.getElementById('edit_terkumpul').value = rawTerkumpul;
+
+    document.getElementById('alt_edit_target').value = rawTarget;
+    document.getElementById('alt_edit_terkumpul').value = rawTerkumpul;
+    document.getElementById('alt_edit_nama').value = rawNama;
+    document.getElementById('alt_edit_tanggal').value = rawTanggal;
 });
 
 document.querySelectorAll('.btnEdit').forEach(btn => {
@@ -362,9 +390,9 @@ document.querySelectorAll('.btnEdit').forEach(btn => {
         modalEdit.classList.remove('hidden');
         document.getElementById('edit_id').value = this.dataset.id;
         document.getElementById('edit_nama_target').value = this.dataset.nama_target;
-        document.getElementById('edit_target').value = new Intl.NumberFormat('id-ID').format(this.dataset.target);
-        document.getElementById('edit_terkumpul').value = new Intl.NumberFormat('id-ID').format(this.dataset.terkumpul);
-        document.getElementById('edit_tanggal').value = this.dataset.tanggal;
+        document.getElementById('edit_target').value = new Intl.NumberFormat('id-ID').format(this.dataset.target_dana);
+        document.getElementById('edit_terkumpul').value = new Intl.NumberFormat('id-ID').format(this.dataset.dana_terkumpul);
+        document.getElementById('edit_tanggal').value = this.dataset.tanggal_target;
     });
 });
 

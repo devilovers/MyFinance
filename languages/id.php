@@ -105,5 +105,11 @@ $lang = [
     'kategori_hiburan' => 'Hiburan',
     'kategori_hadiah' => 'Hadiah',
     'kategori_bepergian' => 'Bepergian',
-    'teks_hapus_umum' => 'Data yang dihapus tidak bisa dikembalikan.'
+    'teks_hapus_umum' => 'Data yang dihapus tidak bisa dikembalikan.',
+    'tambah_utang' => 'Tambah Utang',
+    'nama_utang_pemberi' => 'Nama Utang / Pemberi Pinjaman',
+    'contoh_pemberi_utang' => 'Contoh: Pinjaman Bank, Utang ke Budi',
+    'jumlah_utang' => 'Jumlah Utang (Rp)',
+    'tanggal_jatuh_tempo' => 'Tanggal Jatuh Tempo',
+    'status_pelunasan' => 'Status Pelunasan'
 ];
