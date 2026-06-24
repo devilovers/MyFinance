@@ -57,6 +57,13 @@ myfinance/
 └── README.md
 
 ```
+## 📸 Screenshots
+
+### Dashboard
+
+<p align="center">
+  <img src="screenshots/ssdashboard.png" width="900">
+</p>
 
 ## 🎯 Learning Goals
 
