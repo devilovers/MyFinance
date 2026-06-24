@@ -11,6 +11,7 @@ if ($search != '') {
         FROM transaksi
         WHERE jenis LIKE '%$search%'
            OR kategori LIKE '%$search%'
+           OR metode_pembayaran LIKE '%$search%'
            OR deskripsi LIKE '%$search%'
         ORDER BY tanggal DESC, id DESC
     ");
@@ -54,7 +55,7 @@ include '../includes/navbar.php';
                 type="text"
                 name="search"
                 value="<?= htmlspecialchars($search) ?>"
-                placeholder="Cari kategori, jenis, atau deskripsi transaksi..."
+                placeholder="Cari kategori, jenis, metode, atau deskripsi transaksi..."
                 class="w-full pl-11 pr-4 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-400/20 focus:border-violet-400 transition-all"
             >
         </div>
@@ -85,6 +86,7 @@ include '../includes/navbar.php';
                     <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">Tanggal</th>
                     <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">Jenis</th>
                     <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">Kategori</th>
+                    <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">Metode</th>
                     <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">Jumlah</th>
                     <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">Deskripsi</th>
                     <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500 text-right">Aksi</th>
@@ -111,6 +113,17 @@ include '../includes/navbar.php';
                             <td class="px-6 py-4 text-sm font-medium text-slate-800 dark:text-slate-200 whitespace-nowrap">
                                 <?= htmlspecialchars($t['kategori']) ?>
                             </td>
+                            <td class="px-6 py-4 text-sm whitespace-nowrap">
+                                <?php if ($t['metode_pembayaran'] == 'Cash'): ?>
+                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-medium bg-amber-50 text-amber-700 dark:bg-amber-950/30 dark:text-amber-400 border border-amber-200/50 dark:border-amber-900/30">
+                                        <i class="fa-solid fa-money-bill-wave text-[10px]"></i> Cash
+                                    </span>
+                                <?php else: ?>
+                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-medium bg-blue-50 text-blue-700 dark:bg-blue-950/30 dark:text-blue-400 border border-blue-200/50 dark:border-blue-900/30">
+                                        <i class="fa-solid fa-wallet text-[10px]"></i> E-Wallet
+                                    </span>
+                                <?php endif; ?>
+                            </td>
                             <td class="px-6 py-4 text-sm font-bold whitespace-nowrap <?= strtolower($t['jenis']) == 'pemasukan' ? 'text-green-500' : 'text-red-500' ?>">
                                 <?= strtolower($t['jenis']) == 'pemasukan' ? '+' : '-' ?> <?= rupiah($t['jumlah']) ?>
                             </td>
@@ -125,6 +138,7 @@ include '../includes/navbar.php';
                                         data-id="<?= $t['id'] ?>"
                                         data-jenis="<?= htmlspecialchars($t['jenis']) ?>"
                                         data-kategori="<?= htmlspecialchars($t['kategori']) ?>"
+                                        data-metode="<?= htmlspecialchars($t['metode_pembayaran']) ?>"
                                         data-jumlah="<?= $t['jumlah'] ?>"
                                         data-tanggal="<?= $t['tanggal'] ?>"
                                         data-deskripsi="<?= htmlspecialchars($t['deskripsi']) ?>"
@@ -144,7 +158,7 @@ include '../includes/navbar.php';
                     <?php endwhile; ?>
                 <?php else: ?>
                     <tr>
-                        <td colspan="6" class="px-6 py-12 text-center">
+                        <td colspan="7" class="px-6 py-12 text-center">
                             <span class="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-slate-400 mx-auto mb-3 text-base">
                                 <i class="fa-solid fa-folder-open"></i>
                             </span>
@@ -201,6 +215,21 @@ include '../includes/navbar.php';
                         class="w-full mt-1.5 px-3 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-400/20 focus:border-violet-400 transition-all"
                         required
                     >
+                    </select>
+                </div>
+
+                <div>
+                    <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                        Metode Pembayaran
+                    </label>
+                    <select
+                        name="metode_pembayaran"
+                        id="metode_pembayaran"
+                        class="w-full mt-1.5 px-3 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-400/20 focus:border-violet-400 transition-all"
+                        required
+                    >
+                        <option value="Cash">Cash (Tunai)</option>
+                        <option value="E-Wallet">E-Wallet (Digital)</option>
                     </select>
                 </div>
 
@@ -307,6 +336,21 @@ include '../includes/navbar.php';
                         class="w-full mt-1.5 px-3 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-400/20 focus:border-violet-400 transition-all"
                         required
                     >
+                    </select>
+                </div>
+
+                <div>
+                    <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                        Metode Pembayaran
+                    </label>
+                    <select
+                        name="metode_pembayaran"
+                        id="edit_metode_pembayaran"
+                        class="w-full mt-1.5 px-3 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-400/20 focus:border-violet-400 transition-all"
+                        required
+                    >
+                        <option value="Cash">Cash (Tunai)</option>
+                        <option value="E-Wallet">E-Wallet (Digital)</option>
                     </select>
                 </div>
 
@@ -475,6 +519,7 @@ document.querySelectorAll('.btnEdit').forEach(btn => {
         
         updateKategoriOptions('edit_jenis', 'edit_kategori', this.dataset.kategori);
         
+        document.getElementById('edit_metode_pembayaran').value = this.dataset.metode;
         document.getElementById('edit_jumlah').value = new Intl.NumberFormat('id-ID').format(this.dataset.jumlah);
         document.getElementById('edit_tanggal').value = this.dataset.tanggal;
         document.getElementById('edit_deskripsi').value = this.dataset.deskripsi;

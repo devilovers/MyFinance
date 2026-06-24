@@ -1,55 +1,23 @@
 <?php
 include '../../config/koneksi.php';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $jenis = $_POST['jenis'];
+    $kategori = $_POST['kategori'];
+    $metode_pembayaran = $_POST['metode_pembayaran'];
+    $jumlah = $_POST['jumlah'];
+    $tanggal = $_POST['tanggal'];
+    $deskripsi = mysqli_real_escape_string($conn, $_POST['deskripsi']);
 
-    $jenis = mysqli_real_escape_string(
-        $conn,
-        $_POST['jenis']
-    );
+    $query = "INSERT INTO transaksi (jenis, kategori, metode_pembayaran, jumlah, tanggal, deskripsi) 
+              VALUES ('$jenis', '$kategori', '$metode_pembayaran', '$jumlah', '$tanggal', '$deskripsi')";
 
-    $kategori = mysqli_real_escape_string(
-        $conn,
-        $_POST['kategori']
-    );
-
-    $jumlah = (int) $_POST['jumlah'];
-
-    $tanggal = mysqli_real_escape_string(
-        $conn,
-        $_POST['tanggal']
-    );
-
-    $deskripsi = mysqli_real_escape_string(
-        $conn,
-        $_POST['deskripsi']
-    );
-
-    $query = mysqli_query(
-        $conn,
-        "INSERT INTO transaksi
-        (
-            jenis,
-            kategori,
-            jumlah,
-            deskripsi,
-            tanggal
-        )
-        VALUES
-        (
-            '$jenis',
-            '$kategori',
-            '$jumlah',
-            '$deskripsi',
-            '$tanggal'
-        )"
-    );
-
-    if ($query) {
-        header('Location: ../../pages/transaksi.php');
-        exit;
+    if (mysqli_query($conn, $query)) {
+        header("Location: ../../pages/transaksi.php?status=success_tambah");
+    } else {
+        header("Location: ../../pages/transaksi.php?status=failed_tambah");
     }
-
-    die('Gagal menyimpan transaksi : ' . mysqli_error($conn));
+} else {
+    header("Location: ../../pages/transaksi.php");
 }
 ?>

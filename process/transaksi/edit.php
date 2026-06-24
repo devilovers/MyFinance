@@ -2,29 +2,29 @@
 include '../../config/koneksi.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-
-    $id = (int) $_POST['id'];
-
+    $id = $_POST['id'];
     $jenis = $_POST['jenis'];
     $kategori = $_POST['kategori'];
-
-    $jumlah = str_replace('.', '', $_POST['jumlah']);
-
+    $metode_pembayaran = $_POST['metode_pembayaran'];
+    $jumlah = $_POST['jumlah'];
     $tanggal = $_POST['tanggal'];
-    $deskripsi = $_POST['deskripsi'];
+    $deskripsi = mysqli_real_escape_string($conn, $_POST['deskripsi']);
 
-    $query = mysqli_query($conn, "
-        UPDATE transaksi
-        SET
-            jenis='$jenis',
-            kategori='$kategori',
-            jumlah='$jumlah',
-            deskripsi='$deskripsi',
-            tanggal='$tanggal'
-        WHERE id='$id'
-    ");
+    $query = "UPDATE transaksi SET 
+                jenis = '$jenis', 
+                kategori = '$kategori', 
+                metode_pembayaran = '$metode_pembayaran', 
+                jumlah = '$jumlah', 
+                tanggal = '$tanggal', 
+                deskripsi = '$deskripsi' 
+              WHERE id = '$id'";
 
-    header('Location: ../../pages/transaksi.php');
-    exit;
+    if (mysqli_query($conn, $query)) {
+        header("Location: ../../pages/transaksi.php?status=success_edit");
+    } else {
+        header("Location: ../../pages/transaksi.php?status=failed_edit");
+    }
+} else {
+    header("Location: ../../pages/transaksi.php");
 }
 ?>
