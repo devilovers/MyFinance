@@ -26,7 +26,7 @@
                     MyFinance Dashboard
                 </h2>
                 <p class="text-slate-400 dark:text-slate-500 text-xs mt-0.5 hidden sm:block">
-                    Managed by Nur Islami Sabila
+                    <?= $lang['managed_by'] ?? 'Managed by'; ?> Nur Islami Sabila
                 </p>
             </div>
         </div>
@@ -50,8 +50,29 @@
             >
                 <i class="fa-regular fa-calendar text-slate-400"></i>
                 <span>
-                    <?= date('d F Y'); ?>
+                    <?php 
+                    if (($current_lang ?? 'id') === 'en') {
+                        echo date('F d, Y');
+                    } else {
+                        echo date('d F Y');
+                    }
+                    ?>
                 </span>
+            </div>
+
+            <div class="flex items-center border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden p-0.5 gap-0.5 bg-slate-50 dark:bg-slate-900">
+                <a 
+                    href="?lang=id" 
+                    class="px-2.5 py-1.5 text-xs font-bold rounded-lg transition-all <?= ($current_lang ?? 'id') === 'id' ? 'bg-violet-500 text-white' : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-200' ?>"
+                >
+                    ID
+                </a>
+                <a 
+                    href="?lang=en" 
+                    class="px-2.5 py-1.5 text-xs font-bold rounded-lg transition-all <?= ($current_lang ?? 'id') === 'en' ? 'bg-violet-500 text-white' : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-200' ?>"
+                >
+                    EN
+                </a>
             </div>
 
             <button

@@ -20,7 +20,7 @@ include '../includes/navbar.php';
     <div class="p-6 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/50 rounded-2xl shadow-sm transition-all duration-200 hover:shadow-md">
         <div class="flex items-center justify-between">
             <p class="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
-                Total Saldo
+                <?= $lang['total_saldo'] ?? 'Total Saldo'; ?>
             </p>
             <span class="w-7 h-7 rounded-lg bg-violet-50 dark:bg-violet-950/30 flex items-center justify-center text-violet-500 text-sm">
                 <i class="fa-solid fa-scale-balanced"></i>
@@ -34,7 +34,7 @@ include '../includes/navbar.php';
     <div class="p-6 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/50 rounded-2xl shadow-sm transition-all duration-200 hover:shadow-md">
         <div class="flex items-center justify-between">
             <p class="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
-                Pemasukan
+                <?= $lang['pemasukan'] ?? 'Pemasukan'; ?>
             </p>
             <span class="w-7 h-7 rounded-lg bg-green-50 dark:bg-green-950/30 flex items-center justify-center text-green-500 text-sm">
                 <i class="fa-solid fa-arrow-trend-up"></i>
@@ -48,7 +48,7 @@ include '../includes/navbar.php';
     <div class="p-6 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/50 rounded-2xl shadow-sm transition-all duration-200 hover:shadow-md">
         <div class="flex items-center justify-between">
             <p class="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
-                Pengeluaran
+                <?= $lang['pengeluaran'] ?? 'Pengeluaran'; ?>
             </p>
             <span class="w-7 h-7 rounded-lg bg-red-50 dark:bg-red-950/30 flex items-center justify-center text-red-500 text-sm">
                 <i class="fa-solid fa-arrow-trend-down"></i>
@@ -62,7 +62,7 @@ include '../includes/navbar.php';
     <div class="p-6 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/50 rounded-2xl shadow-sm transition-all duration-200 hover:shadow-md">
         <div class="flex items-center justify-between">
             <p class="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
-                Tabungan
+                <?= $lang['tabungan'] ?? 'Tabungan'; ?>
             </p>
             <span class="w-7 h-7 rounded-lg bg-blue-50 dark:bg-blue-950/30 flex items-center justify-center text-blue-500 text-sm">
                 <i class="fa-solid fa-piggy-bank"></i>
@@ -76,7 +76,7 @@ include '../includes/navbar.php';
     <div class="p-6 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/50 rounded-2xl shadow-sm transition-all duration-200 hover:shadow-md">
         <div class="flex items-center justify-between">
             <p class="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
-                Investasi
+                <?= $lang['investasi'] ?? 'Investasi'; ?>
             </p>
             <span class="w-7 h-7 rounded-lg bg-yellow-50 dark:bg-yellow-950/30 flex items-center justify-center text-yellow-500 text-sm">
                 <i class="fa-solid fa-chart-pie"></i>
@@ -90,7 +90,7 @@ include '../includes/navbar.php';
     <div class="p-6 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/50 rounded-2xl shadow-sm transition-all duration-200 hover:shadow-md">
         <div class="flex items-center justify-between">
             <p class="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
-                Utang
+                <?= $lang['utang'] ?? 'Utang'; ?>
             </p>
             <span class="w-7 h-7 rounded-lg bg-orange-50 dark:bg-orange-950/30 flex items-center justify-center text-orange-500 text-sm">
                 <i class="fa-solid fa-hand-holding-dollar"></i>
@@ -106,7 +106,7 @@ include '../includes/navbar.php';
 <div class="p-6 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/50 rounded-2xl shadow-sm mt-6">
     <div class="flex items-center justify-between mb-6">
         <h2 class="text-base font-bold text-slate-800 dark:text-white tracking-tight">
-            Alokasi Keuangan & Penggunaan Dana
+            <?= $lang['alokasi'] ?? 'Alokasi Keuangan & Penggunaan Dana'; ?>
         </h2>
     </div>
 
@@ -120,7 +120,7 @@ include '../includes/navbar.php';
 <div class="p-6 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/50 rounded-2xl shadow-sm mt-6">
 
     <h2 class="text-base font-bold text-red-500 mb-4 tracking-tight flex items-center gap-2">
-        <i class="fa-solid fa-bell text-sm"></i> Pengingat Utang Berdasarkan Jatuh Tempo
+        <i class="fa-solid fa-bell text-sm"></i> <?= $lang['pengingat'] ?? 'Pengingat Utang Berdasarkan Jatuh Tempo'; ?>
     </h2>
 
     <div class="space-y-4">
@@ -146,11 +146,19 @@ include '../includes/navbar.php';
 
                     <div class="flex flex-wrap items-center gap-x-4 gap-y-1 mt-1.5 text-xs text-slate-500 dark:text-slate-400">
                         <p>
-                            Jumlah: <span class="font-semibold text-slate-700 dark:text-slate-300"><?= rupiah($u['jumlah']) ?></span>
+                            <?= $lang['jumlah'] ?? 'Jumlah'; ?>: <span class="font-semibold text-slate-700 dark:text-slate-300"><?= rupiah($u['jumlah']) ?></span>
                         </p>
                         <span class="hidden md:inline text-slate-300 dark:text-slate-600">•</span>
                         <p>
-                            Jatuh Tempo: <span class="font-semibold text-slate-700 dark:text-slate-300"><?= date('d F Y', strtotime($u['jatuh_tempo'])) ?></span>
+                            <?= $lang['jatuh_tempo'] ?? 'Jatuh Tempo'; ?>: <span class="font-semibold text-slate-700 dark:text-slate-300">
+                                <?php 
+                                if (($current_lang ?? 'id') === 'en') {
+                                    echo date('F d, Y', strtotime($u['jatuh_tempo']));
+                                } else {
+                                    echo date('d F Y', strtotime($u['jatuh_tempo']));
+                                }
+                                ?>
+                            </span>
                         </p>
                     </div>
                 </div>
@@ -158,15 +166,15 @@ include '../includes/navbar.php';
                 <div class="text-left md:text-right shrink-0">
                     <?php if ($selisih < 0): ?>
                         <span class="inline-flex items-center px-3 py-1 rounded-lg text-xs font-semibold bg-red-50 text-red-600 border border-red-100 dark:bg-red-950/30 dark:text-red-400 dark:border-red-900/40">
-                            Lewat jatuh tempo
+                            <?= $lang['lewat'] ?? 'Lewat jatuh tempo'; ?>
                         </span>
                     <?php elseif ($selisih == 0): ?>
                         <span class="inline-flex items-center px-3 py-1 rounded-lg text-xs font-semibold bg-orange-50 text-orange-600 border border-orange-100 dark:bg-orange-950/30 dark:text-orange-400 dark:border-orange-900/40">
-                            Jatuh tempo hari ini
+                            <?= $lang['hari_ini'] ?? 'Jatuh tempo hari ini'; ?>
                         </span>
                     <?php else: ?>
                         <span class="inline-flex items-center px-3 py-1 rounded-lg text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-100 dark:bg-amber-950/20 dark:text-amber-400 dark:border-amber-900/40">
-                            <?= $selisih ?> hari lagi
+                            <?= $selisih ?> <?= $lang['hari_lagi'] ?? 'hari lagi'; ?>
                         </span>
                     <?php endif; ?>
                 </div>
@@ -188,10 +196,10 @@ new Chart(ctx, {
     type: 'doughnut',
     data: {
         labels: [
-            'Sisa Saldo',
-            'Pengeluaran',
-            'Tabungan',
-            'Investasi'
+            '<?= $lang['sisa_saldo'] ?? 'Sisa Saldo'; ?>',
+            '<?= $lang['pengeluaran'] ?? 'Pengeluaran'; ?>',
+            '<?= $lang['tabungan'] ?? 'Tabungan'; ?>',
+            '<?= $lang['investasi'] ?? 'Investasi'; ?>'
         ],
         datasets: [{
             data: [

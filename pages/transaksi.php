@@ -1,4 +1,8 @@
 <?php
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Cache-Control: post-check=0, pre-check=0", false);
+header("Pragma: no-cache");
+
 include '../config/koneksi.php';
 include '../helpers/finance_helper.php';
 
@@ -31,10 +35,10 @@ include '../includes/navbar.php';
 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
     <div>
         <h1 class="text-2xl font-bold text-slate-800 dark:text-white tracking-tight">
-            Riwayat Transaksi Keuangan
+            <?= $lang['riwayat_transaksi_keuangan'] ?? 'Riwayat Transaksi Keuangan'; ?>
         </h1>
         <p class="text-xs text-slate-400 dark:text-slate-500 mt-0.5">
-            Catat dan tinjau seluruh arus kas masuk maupun keluar secara berkala.
+            <?= $lang['sub_transaksi'] ?? 'Catat dan tinju seluruh arus kas masuk maupun keluar secara berkala.'; ?>
         </p>
     </div>
 
@@ -43,7 +47,7 @@ include '../includes/navbar.php';
         class="inline-flex items-center justify-center gap-2 bg-violet-500 hover:bg-violet-600 text-white px-4 py-2.5 rounded-xl font-medium text-sm shadow-sm shadow-violet-500/10 transition-colors duration-200"
     >
         <i class="fa-solid fa-plus text-xs"></i>
-        Tambah Transaksi
+        <?= $lang['tambah_transaksi'] ?? 'Tambah Transaksi'; ?>
     </button>
 </div>
 
@@ -55,7 +59,7 @@ include '../includes/navbar.php';
                 type="text"
                 name="search"
                 value="<?= htmlspecialchars($search) ?>"
-                placeholder="Cari kategori, jenis, metode, atau deskripsi transaksi..."
+                placeholder="<?= $lang['cari_transaksi_placeholder'] ?? 'Cari kategori, jenis, metode, atau deskripsi transaksi...'; ?>"
                 class="w-full pl-11 pr-4 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-400/20 focus:border-violet-400 transition-all"
             >
         </div>
@@ -64,14 +68,14 @@ include '../includes/navbar.php';
                 type="submit"
                 class="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl font-medium text-sm transition-colors duration-150"
             >
-                Cari
+                <?= $lang['cari'] ?? 'Cari'; ?>
             </button>
             <?php if ($search != ''): ?>
                 <a
                     href="transaksi.php"
                     class="px-4 py-2.5 border border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl flex items-center justify-center transition-colors text-sm font-medium"
                 >
-                    Reset
+                    <?= $lang['reset'] ?? 'Reset'; ?>
                 </a>
             <?php endif; ?>
         </div>
@@ -83,13 +87,13 @@ include '../includes/navbar.php';
         <table class="w-full text-left border-collapse">
             <thead>
                 <tr class="border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/20">
-                    <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">Tanggal</th>
-                    <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">Jenis</th>
-                    <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">Kategori</th>
-                    <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">Metode</th>
-                    <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">Jumlah</th>
-                    <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">Deskripsi</th>
-                    <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500 text-right">Aksi</th>
+                    <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500"><?= $lang['tanggal'] ?? 'Tanggal'; ?></th>
+                    <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500"><?= $lang['jenis'] ?? 'Jenis'; ?></th>
+                    <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500"><?= $lang['kategori'] ?? 'Kategori'; ?></th>
+                    <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500"><?= $lang['metode'] ?? 'Metode'; ?></th>
+                    <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500"><?= $lang['jumlah'] ?? 'Jumlah'; ?></th>
+                    <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500"><?= $lang['deskripsi'] ?? 'Deskripsi'; ?></th>
+                    <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500 text-right"><?= $lang['aksi'] ?? 'Aksi'; ?></th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-slate-100 dark:divide-slate-800/60">
@@ -97,21 +101,31 @@ include '../includes/navbar.php';
                     <?php while ($t = mysqli_fetch_assoc($transaksi)): ?>
                         <tr class="hover:bg-slate-50/40 dark:hover:bg-slate-800/20 transition-colors duration-150">
                             <td class="px-6 py-4 text-sm text-slate-600 dark:text-slate-400 whitespace-nowrap">
-                                <?= date('d F Y', strtotime($t['tanggal'])) ?>
+                                <?php 
+                                if (($current_lang ?? 'id') === 'en') {
+                                    echo date('M d, Y', strtotime($t['tanggal']));
+                                } else {
+                                    echo date('d M Y', strtotime($t['tanggal']));
+                                }
+                                ?>
                             </td>
                             <td class="px-6 py-4 text-sm whitespace-nowrap">
                                 <?php if (strtolower($t['jenis']) == 'pemasukan'): ?>
                                     <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-green-50 text-green-600 dark:bg-green-950/30 dark:text-green-400">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> Pemasukan
+                                        <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> <?= $lang['pemasukan'] ?? 'Pemasukan'; ?>
                                     </span>
                                 <?php else: ?>
                                     <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-red-50 text-red-600 dark:bg-red-950/30 dark:text-red-400">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> Pengeluaran
+                                        <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> <?= $lang['pengeluaran'] ?? 'Pengeluaran'; ?>
                                     </span>
                                 <?php endif; ?>
                             </td>
                             <td class="px-6 py-4 text-sm font-medium text-slate-800 dark:text-slate-200 whitespace-nowrap">
-                                <?= htmlspecialchars($t['kategori']) ?>
+                                <?php 
+                                // Menerjemahkan kategori lama yang tersimpan dalam format teks bahasa indonesia di DB
+                                $key_kategori = 'kategori_' . strtolower($t['kategori']);
+                                echo htmlspecialchars($lang[$key_kategori] ?? $t['kategori']); 
+                                ?>
                             </td>
                             <td class="px-6 py-4 text-sm whitespace-nowrap">
                                 <?php if ($t['metode_pembayaran'] == 'Cash'): ?>
@@ -163,7 +177,7 @@ include '../includes/navbar.php';
                                 <i class="fa-solid fa-folder-open"></i>
                             </span>
                             <p class="text-sm font-medium text-slate-400 dark:text-slate-500">
-                                Tidak ada data transaksi ditemukan.
+                                <?= $lang['tidak_ada_transaksi_ditemukan'] ?? 'Tidak ada data transaksi ditemukan.'; ?>
                             </p>
                         </td>
                     </tr>
@@ -184,7 +198,7 @@ include '../includes/navbar.php';
 
         <div class="text-center mb-5">
             <h2 class="text-lg font-bold text-slate-800 dark:text-white tracking-tight">
-                Tambah Transaksi Baru
+                <?= $lang['tambah_transaksi_baru'] ?? 'Tambah Transaksi Baru'; ?>
             </h2>
         </div>
 
@@ -192,7 +206,7 @@ include '../includes/navbar.php';
             <div class="space-y-4">
                 <div>
                     <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                        Jenis Transaksi
+                        <?= $lang['jenis_transaksi'] ?? 'Jenis Transaksi'; ?>
                     </label>
                     <select
                         name="jenis"
@@ -200,14 +214,14 @@ include '../includes/navbar.php';
                         class="w-full mt-1.5 px-3 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-400/20 focus:border-violet-400 transition-all"
                         required
                     >
-                        <option value="Pemasukan">Pemasukan</option>
-                        <option value="Pengeluaran">Pengeluaran</option>
+                        <option value="Pemasukan"><?= $lang['pemasukan'] ?? 'Pemasukan'; ?></option>
+                        <option value="Pengeluaran"><?= $lang['pengeluaran'] ?? 'Pengeluaran'; ?></option>
                     </select>
                 </div>
 
                 <div>
                     <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                        Kategori
+                        <?= $lang['kategori'] ?? 'Kategori'; ?>
                     </label>
                     <select
                         name="kategori"
@@ -220,7 +234,7 @@ include '../includes/navbar.php';
 
                 <div>
                     <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                        Metode Pembayaran
+                        <?= $lang['metode_pembayaran'] ?? 'Metode Pembayaran'; ?>
                     </label>
                     <select
                         name="metode_pembayaran"
@@ -228,14 +242,14 @@ include '../includes/navbar.php';
                         class="w-full mt-1.5 px-3 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-400/20 focus:border-violet-400 transition-all"
                         required
                     >
-                        <option value="Cash">Cash (Tunai)</option>
-                        <option value="E-Wallet">E-Wallet (Digital)</option>
+                        <option value="Cash"><?= $lang['tunai'] ?? 'Cash (Tunai)'; ?></option>
+                        <option value="E-Wallet"><?= $lang['digital'] ?? 'E-Wallet (Digital)'; ?></option>
                     </select>
                 </div>
 
                 <div>
                     <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                        Jumlah (Rp)
+                        <?= $lang['jumlah'] ?? 'Jumlah'; ?> (Rp)
                     </label>
                     <input
                         type="text"
@@ -249,7 +263,7 @@ include '../includes/navbar.php';
 
                 <div>
                     <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                        Tanggal
+                        <?= $lang['tanggal'] ?? 'Tanggal'; ?>
                     </label>
                     <input
                         type="date"
@@ -262,12 +276,12 @@ include '../includes/navbar.php';
 
                 <div>
                     <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                        Deskripsi
+                        <?= $lang['deskripsi'] ?? 'Deskripsi'; ?>
                     </label>
                     <textarea
                         name="deskripsi"
                         rows="3"
-                        placeholder="Keterangan tambahan (opsional)..."
+                        placeholder="<?= $lang['keterangan_opsional'] ?? 'Keterangan tambahan (opsional)...'; ?>"
                         class="w-full mt-1.5 px-3 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-400/20 focus:border-violet-400 transition-all resize-none"
                     ></textarea>
                 </div>
@@ -279,13 +293,13 @@ include '../includes/navbar.php';
                     id="btnBatal"
                     class="px-4 py-2 text-sm font-medium rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
                 >
-                    Batal
+                    <?= $lang['batal'] ?? 'Batal'; ?>
                 </button>
                 <button
                     type="submit"
                     class="px-4 py-2 text-sm font-medium rounded-xl bg-violet-500 text-white hover:bg-violet-600 shadow-sm shadow-violet-500/10 transition-colors"
                 >
-                    Simpan
+                    <?= $lang['simpan'] ?? 'Simpan'; ?>
                 </button>
             </div>
         </form>
@@ -303,7 +317,7 @@ include '../includes/navbar.php';
 
         <div class="text-center mb-5">
             <h2 class="text-lg font-bold text-slate-800 dark:text-white tracking-tight">
-                Edit Transaksi
+                <?= $lang['edit_transaksi'] ?? 'Edit Transaksi'; ?>
             </h2>
         </div>
 
@@ -313,7 +327,7 @@ include '../includes/navbar.php';
             <div class="space-y-4">
                 <div>
                     <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                        Jenis Transaksi
+                        <?= $lang['jenis_transaksi'] ?? 'Jenis Transaksi'; ?>
                     </label>
                     <select
                         name="jenis"
@@ -321,14 +335,14 @@ include '../includes/navbar.php';
                         class="w-full mt-1.5 px-3 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-400/20 focus:border-violet-400 transition-all"
                         required
                     >
-                        <option value="Pemasukan">Pemasukan</option>
-                        <option value="Pengeluaran">Pengeluaran</option>
+                        <option value="Pemasukan"><?= $lang['pemasukan'] ?? 'Pemasukan'; ?></option>
+                        <option value="Pengeluaran"><?= $lang['pengeluaran'] ?? 'Pengeluaran'; ?></option>
                     </select>
                 </div>
 
                 <div>
                     <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                        Kategori
+                        <?= $lang['kategori'] ?? 'Kategori'; ?>
                     </label>
                     <select
                         name="kategori"
@@ -341,7 +355,7 @@ include '../includes/navbar.php';
 
                 <div>
                     <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                        Metode Pembayaran
+                        <?= $lang['metode_pembayaran'] ?? 'Metode Pembayaran'; ?>
                     </label>
                     <select
                         name="metode_pembayaran"
@@ -349,14 +363,14 @@ include '../includes/navbar.php';
                         class="w-full mt-1.5 px-3 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-400/20 focus:border-violet-400 transition-all"
                         required
                     >
-                        <option value="Cash">Cash (Tunai)</option>
-                        <option value="E-Wallet">E-Wallet (Digital)</option>
+                        <option value="Cash"><?= $lang['tunai'] ?? 'Cash (Tunai)'; ?></option>
+                        <option value="E-Wallet"><?= $lang['digital'] ?? 'E-Wallet (Digital)'; ?></option>
                     </select>
                 </div>
 
                 <div>
                     <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                        Jumlah (Rp)
+                        <?= $lang['jumlah'] ?? 'Jumlah'; ?> (Rp)
                     </label>
                     <input
                         type="text"
@@ -369,7 +383,7 @@ include '../includes/navbar.php';
 
                 <div>
                     <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                        Tanggal
+                        <?= $lang['tanggal'] ?? 'Tanggal'; ?>
                     </label>
                     <input
                         type="date"
@@ -382,7 +396,7 @@ include '../includes/navbar.php';
 
                 <div>
                     <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                        Deskripsi
+                        <?= $lang['deskripsi'] ?? 'Deskripsi'; ?>
                     </label>
                     <textarea
                         name="deskripsi"
@@ -399,13 +413,13 @@ include '../includes/navbar.php';
                     id="closeEdit"
                     class="px-4 py-2 text-sm font-medium rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
                 >
-                    Batal
+                    <?= $lang['batal'] ?? 'Batal'; ?>
                 </button>
                 <button
                     type="submit"
                     class="px-4 py-2 text-sm font-medium rounded-xl bg-violet-500 text-white hover:bg-violet-600 shadow-sm shadow-violet-500/10 transition-colors"
                 >
-                    Simpan
+                    <?= $lang['simpan'] ?? 'Simpan'; ?>
                 </button>
             </div>
         </form>
@@ -417,8 +431,23 @@ const modal = document.getElementById('modalTambah');
 const modalEdit = document.getElementById('modalEdit');
 
 const opsiKategori = {
-    'Pemasukan': ['Gaji', 'Saku'],
-    'Pengeluaran': ['Keluarga', 'Makanan', 'Barang', 'Transportasi', 'Kesehatan', 'Kebutuhan', 'Keinginan', 'Belanja', 'Hiburan', 'Hadiah', 'Bepergian']
+    'Pemasukan': [
+        { value: 'Gaji', text: '<?= $lang['kategori_gaji'] ?? "Gaji"; ?>' },
+        { value: 'Saku', text: '<?= $lang['kategori_saku'] ?? "Saku"; ?>' }
+    ],
+    'Pengeluaran': [
+        { value: 'Keluarga', text: '<?= $lang['kategori_keluarga'] ?? "Keluarga"; ?>' },
+        { value: 'Makanan', text: '<?= $lang['kategori_makanan'] ?? "Makanan"; ?>' },
+        { value: 'Barang', text: '<?= $lang['kategori_barang'] ?? "Barang"; ?>' },
+        { value: 'Transportasi', text: '<?= $lang['kategori_transportasi'] ?? "Transportasi"; ?>' },
+        { value: 'Kesehatan', text: '<?= $lang['kategori_kesehatan'] ?? "Kesehatan"; ?>' },
+        { value: 'Kebutuhan', text: '<?= $lang['kategori_kebutuhan'] ?? "Kebutuhan"; ?>' },
+        { value: 'Keinginan', text: '<?= $lang['kategori_keinginan'] ?? "Keinginan"; ?>' },
+        { value: 'Belanja', text: '<?= $lang['kategori_belanja'] ?? "Belanja"; ?>' },
+        { value: 'Hiburan', text: '<?= $lang['kategori_hiburan'] ?? "Hiburan"; ?>' },
+        { value: 'Hadiah', text: '<?= $lang['kategori_hadiah'] ?? "Hadiah"; ?>' },
+        { value: 'Bepergian', text: '<?= $lang['kategori_bepergian'] ?? "Bepergian"; ?>' }
+    ]
 };
 
 function updateKategoriOptions(jenisSelectId, kategoriSelectId, selectedValue = '') {
@@ -430,7 +459,7 @@ function updateKategoriOptions(jenisSelectId, kategoriSelectId, selectedValue = 
     
     const defaultOption = document.createElement('option');
     defaultOption.value = '';
-    defaultOption.textContent = 'Pilih Kategori';
+    defaultOption.textContent = '<?= $lang['pilih_kategori'] ?? "Pilih Kategori"; ?>';
     defaultOption.disabled = true;
     defaultOption.selected = true;
     kategoriSelect.appendChild(defaultOption);
@@ -438,9 +467,10 @@ function updateKategoriOptions(jenisSelectId, kategoriSelectId, selectedValue = 
     if (opsiKategori[jenis]) {
         opsiKategori[jenis].forEach(kat => {
             const option = document.createElement('option');
-            option.value = kat;
-            option.textContent = kat;
-            if (selectedValue && kat.toLowerCase() === selectedValue.toLowerCase()) {
+            option.value = kat.value;      
+            option.textContent = kat.text; 
+            
+            if (selectedValue && kat.value.toLowerCase() === selectedValue.toLowerCase()) {
                 option.selected = true;
                 defaultOption.selected = false;
             }
@@ -530,14 +560,14 @@ document.querySelectorAll('.btnHapus').forEach(button => {
     button.addEventListener('click', function () {
         const id = this.dataset.id;
         Swal.fire({
-            title: 'Hapus transaksi?',
-            text: 'Data yang dihapus tidak bisa dikembalikan.',
+            title: '<?= $lang['konfirmasi_hapus_transaksi'] ?? "Hapus transaksi?"; ?>',
+            text: '<?= $lang['teks_hapus_umum'] ?? "Data yang dihapus tidak bisa dikembalikan."; ?>',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#ef4444',
             cancelButtonColor: '#6b7280',
-            confirmButtonText: 'Ya, Hapus',
-            cancelButtonText: 'Batal'
+            confirmButtonText: '<?= $lang['ya_hapus'] ?? "Ya, Hapus"; ?>',
+            cancelButtonText: '<?= $lang['batal'] ?? "Batal"; ?>'
         }).then((result) => {
             if (result.isConfirmed) {
                 window.location.href = '../process/transaksi/hapus.php?id=' + id;

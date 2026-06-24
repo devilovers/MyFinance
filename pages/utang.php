@@ -16,10 +16,10 @@ include '../includes/navbar.php';
 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
     <div>
         <h1 class="text-2xl font-bold text-slate-800 dark:text-white tracking-tight">
-            Catatan Utang & Pinjaman
+            <?= $lang['catatan_utang_pinjaman'] ?? 'Catatan Utang & Pinjaman'; ?>
         </h1>
         <p class="text-xs text-slate-400 dark:text-slate-500 mt-0.5">
-            Pantau saldo pinjaman, tenggat jatuh tempo, dan status pelunasan utang Anda.
+            <?= $lang['sub_utang'] ?? 'Pantau saldo pinjaman, tenggat jatuh tempo, dan status pelunasan utang Anda.'; ?>
         </p>
     </div>
 
@@ -28,114 +28,102 @@ include '../includes/navbar.php';
         class="inline-flex items-center justify-center gap-2 bg-violet-500 hover:bg-violet-600 text-white px-4 py-2.5 rounded-xl font-medium text-sm shadow-sm shadow-violet-500/10 transition-colors duration-200"
     >
         <i class="fa-solid fa-plus text-xs"></i>
-        Tambah Catatan Utang
+        <?= $lang['tambah_catatan_utang'] ?? 'Tambah Catatan Utang'; ?>
     </button>
 </div>
 
-<div class="grid lg:grid-cols-2 gap-6">
+<div class="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/50 rounded-2xl shadow-sm overflow-hidden">
+    <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+            <thead>
+                <tr class="border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/20">
+                    <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500"><?= $lang['nama_utang_pinjaman'] ?? 'Nama Utang / Pinjaman'; ?></th>
+                    <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500"><?= $lang['jumlah'] ?? 'Jumlah'; ?></th>
+                    <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500"><?= $lang['jatuh_tempo'] ?? 'Jatuh Tempo'; ?></th>
+                    <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500"><?= $lang['status'] ?? 'Status'; ?></th>
+                    <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500 text-right"><?= $lang['aksi'] ?? 'Aksi'; ?></th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 dark:divide-slate-800/60">
+                <?php if (mysqli_num_rows($data) > 0): ?>
+                    <?php while ($d = mysqli_fetch_assoc($data)): ?>
+                        <tr class="hover:bg-slate-50/40 dark:hover:bg-slate-800/20 transition-colors duration-150">
+                            <td class="px-6 py-4 text-sm font-medium text-slate-800 dark:text-slate-200 whitespace-nowrap">
+                                <?= htmlspecialchars($d['nama_utang']) ?>
+                            </td>
+                            <td class="px-6 py-4 text-sm font-bold text-slate-700 dark:text-slate-300 whitespace-nowrap">
+                                <?= rupiah($d['jumlah']) ?>
+                            </td>
+                            <td class="px-6 py-4 text-sm text-slate-500 dark:text-slate-400 whitespace-nowrap">
+                                <?php 
+                                if ($d['status'] == 'Belum Lunas') {
+                                    $today = new DateTime();
+                                    $dueDate = new DateTime($d['jatuh_tempo']);
+                                    $interval = $today->diff($dueDate);
+                                    $days = (int)$dueDate->diff($today)->format('%r%a');
 
-<?php if(mysqli_num_rows($data) > 0): ?>
-    <?php while($u = mysqli_fetch_assoc($data)) : ?>
-        <div class="p-6 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/50 rounded-2xl shadow-sm transition-all duration-200 hover:shadow-md flex flex-col justify-between relative overflow-hidden">
-            
-            <div class="absolute left-0 top-0 bottom-0 w-1.5 <?= $u['status'] == 'Belum Lunas' ? 'bg-amber-500' : 'bg-green-500' ?>"></div>
-
-            <div>
-                <div class="flex justify-between items-start gap-4">
-                    <div class="flex-1 min-w-0">
-                        <div class="flex items-center gap-2">
-                            <span class="w-6 h-6 rounded-lg <?= $u['status'] == 'Belum Lunas' ? 'bg-amber-50 dark:bg-amber-950/30 text-amber-500' : 'bg-green-50 dark:bg-green-950/30 text-green-500' ?> flex items-center justify-center text-xs shrink-0">
-                                <i class="fa-solid fa-hand-holding-dollar"></i>
-                            </span>
-                            <h2 class="text-base font-bold text-slate-800 dark:text-white tracking-tight truncate">
-                                <?= htmlspecialchars($u['nama_utang']) ?>
-                            </h2>
-                        </div>
-
-                        <div class="mt-4 flex items-baseline gap-1.5 flex-wrap">
-                            <span class="text-xl font-bold text-slate-800 dark:text-white tracking-tight">
-                                <?= rupiah($u['jumlah']) ?>
-                            </span>
-                            <span class="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium <?= $u['status'] == 'Belum Lunas' ? 'bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400' : 'bg-green-50 text-green-700 dark:bg-green-950/40 dark:text-green-400' ?>">
-                                <?= $u['status'] ?>
-                            </span>
-                        </div>
-                    </div>
-
-                    <div class="flex items-center gap-1.5 shrink-0">
-                        <button
-                            type="button"
-                            class="btnEdit border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 w-9 h-9 rounded-xl flex items-center justify-center transition-colors duration-150"
-                            data-id="<?= $u['id'] ?>"
-                            data-nama_utang="<?= htmlspecialchars($u['nama_utang']) ?>"
-                            data-jumlah="<?= $u['jumlah'] ?>"
-                            data-jatuh_tempo="<?= $u['jatuh_tempo'] ?>"
-                            data-status="<?= $u['status'] ?>"
-                        >
-                            <i class="fa-solid fa-pen text-xs"></i>
-                        </button>
-
-                        <button
-                            type="button"
-                            class="btnHapus bg-red-50 dark:bg-red-950/20 text-red-500 hover:bg-red-100 dark:hover:bg-red-950/40 w-9 h-9 rounded-xl flex items-center justify-center transition-colors duration-150"
-                            data-id="<?= $u['id'] ?>"
-                        >
-                            <i class="fa-solid fa-trash text-xs"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="mt-5 pt-4 border-t border-slate-100 dark:border-slate-800/60 flex items-center justify-between text-xs">
-                <div class="flex items-center gap-1.5 text-slate-400 dark:text-slate-500">
-                    <i class="fa-regular fa-calendar-check text-sm"></i>
-                    <span>Jatuh Tempo:</span>
-                    <span class="font-semibold text-slate-600 dark:text-slate-300">
-                        <?= date('d M Y', strtotime($u['jatuh_tempo'])) ?>
-                    </span>
-                </div>
-
-                <?php if ($u['status'] == 'Belum Lunas'): ?>
-                    <?php
-                    $today = new DateTime();
-                    $targetDate = new DateTime($u['jatuh_tempo']);
-                    $diff = $today->diff($targetDate);
-                    $selisih = (int)$diff->format('%r%a');
-                    ?>
-
-                    <?php if ($selisih < 0): ?>
-                        <span class="text-red-500 font-semibold flex items-center gap-1">
-                            <i class="fa-solid fa-circle-exclamation"></i> Terlambat <?= abs($selisih) ?> hari
-                        </span>
-                    <?php elseif ($selisih == 0): ?>
-                        <span class="text-amber-500 font-semibold flex items-center gap-1">
-                            <i class="fa-solid fa-clock"></i> Hari ini!
-                        </span>
-                    <?php else: ?>
-                        <span class="text-slate-400 dark:text-slate-500 font-medium">
-                            <?= $selisih ?> hari lagi
-                        </span>
-                    <?php endif; ?>
+                                    if ($days > 0) {
+                                        echo "<span class='text-red-500 font-semibold'>" . date('d M Y', strtotime($d['jatuh_tempo'])) . " (" . ($lang['lewat'] ?? 'Lewat') . " " . abs($days) . " " . ($lang['hari_lagi'] ?? 'hari') . ")</span>";
+                                    } elseif ($days == 0) {
+                                        echo "<span class='text-amber-500 font-semibold'>" . date('d M Y', strtotime($d['jatuh_tempo'])) . " (" . ($lang['hari_ini'] ?? 'Jatuh tempo hari ini') . ")</span>";
+                                    } else {
+                                        echo "<span>" . date('d M Y', strtotime($d['jatuh_tempo'])) . " (" . abs($days) . " " . ($lang['hari_lagi'] ?? 'hari lagi') . ")</span>";
+                                    }
+                                } else {
+                                    echo "<span class='line-through text-slate-400'>" . date('d M Y', strtotime($d['jatuh_tempo'])) . "</span>";
+                                }
+                                ?>
+                            </td>
+                            <td class="px-6 py-4 text-sm whitespace-nowrap">
+                                <?php if ($d['status'] == 'Lunas'): ?>
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-green-50 text-green-600 dark:bg-green-950/30 dark:text-green-400">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> <?= $lang['lunas'] ?? 'Lunas'; ?>
+                                    </span>
+                                <?php else: ?>
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-red-50 text-red-600 dark:bg-red-950/30 dark:text-red-400">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> <?= $lang['belum_lunas'] ?? 'Belum Lunas'; ?>
+                                    </span>
+                                <?php endif; ?>
+                            </td>
+                            <td class="px-6 py-4 text-sm text-right whitespace-nowrap">
+                                <div class="flex items-center justify-end gap-1.5">
+                                    <button
+                                        type="button"
+                                        class="btnEdit border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 w-8 h-8 rounded-lg flex items-center justify-center transition-colors"
+                                        data-id="<?= $d['id'] ?>"
+                                        data-nama_utang="<?= htmlspecialchars($d['nama_utang']) ?>"
+                                        data-jumlah="<?= $d['jumlah'] ?>"
+                                        data-jatuh_tempo="<?= $d['jatuh_tempo'] ?>"
+                                        data-status="<?= $d['status'] ?>"
+                                    >
+                                        <i class="fa-solid fa-pen text-xs"></i>
+                                    </button>
+                                    <button
+                                        type="button"
+                                        class="btnHapus bg-red-50 dark:bg-red-950/20 text-red-500 hover:bg-red-100 dark:hover:bg-red-950/40 w-8 h-8 rounded-lg flex items-center justify-center transition-colors"
+                                        data-id="<?= $d['id'] ?>"
+                                    >
+                                        <i class="fa-solid fa-trash text-xs"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    <?php endwhile; ?>
                 <?php else: ?>
-                    <span class="text-green-500 font-semibold flex items-center gap-1">
-                        <i class="fa-solid fa-circle-check"></i> Selesai
-                    </span>
+                    <tr>
+                        <td colspan="5" class="px-6 py-12 text-center">
+                            <span class="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-slate-400 mx-auto mb-3 text-base">
+                                <i class="fa-solid fa-folder-open"></i>
+                            </span>
+                            <p class="text-sm font-medium text-slate-400 dark:text-slate-500">
+                                <?= $lang['belum_ada_utang'] ?? 'Belum ada catatan utang yang ditambahkan.'; ?>
+                            </p>
+                        </td>
+                    </tr>
                 <?php endif; ?>
-            </div>
-
-        </div>
-    <?php endwhile; ?>
-<?php else : ?>
-    <div class="p-6 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/50 rounded-2xl shadow-sm lg:col-span-2 text-center py-12">
-        <span class="w-12 h-12 rounded-xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-slate-400 mx-auto mb-3 text-lg">
-            <i class="fa-solid fa-folder-open"></i>
-        </span>
-        <p class="text-sm font-medium text-slate-400 dark:text-slate-500">
-            Belum ada catatan utang yang ditambahkan.
-        </p>
+            </tbody>
+        </table>
     </div>
-<?php endif; ?>
-
 </div>
 
 <div
@@ -149,7 +137,7 @@ include '../includes/navbar.php';
 
         <div class="text-center mb-5">
             <h2 class="text-lg font-bold text-slate-800 dark:text-white tracking-tight">
-                Tambah Catatan Utang
+                <?= $lang['tambah_catatan_utang'] ?? 'Tambah Catatan Utang'; ?>
             </h2>
         </div>
 
@@ -157,12 +145,12 @@ include '../includes/navbar.php';
             <div class="space-y-4">
                 <div>
                     <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                        Nama Transaksi / Pemberi Pinjaman
+                        <?= $lang['nama_utang_pinjaman'] ?? 'Nama Utang / Pinjaman'; ?>
                     </label>
                     <input
                         type="text"
                         name="nama_utang"
-                        placeholder="Contoh: Pinjaman Bank, Hutang Teman"
+                        placeholder="<?= $lang['contoh_utang'] ?? 'Contoh: Pinjaman Bank, Hutang Teman'; ?>"
                         class="w-full mt-1.5 px-3 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-400/20 focus:border-violet-400 transition-all"
                         required
                     >
@@ -170,7 +158,7 @@ include '../includes/navbar.php';
 
                 <div>
                     <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                        Jumlah Utang (Rp)
+                        <?= $lang['jumlah'] ?? 'Jumlah'; ?> (Rp)
                     </label>
                     <input
                         type="text"
@@ -184,7 +172,7 @@ include '../includes/navbar.php';
 
                 <div>
                     <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                        Tanggal Jatuh Tempo
+                        <?= $lang['jatuh_tempo'] ?? 'Jatuh Tempo'; ?>
                     </label>
                     <input
                         type="date"
@@ -194,20 +182,6 @@ include '../includes/navbar.php';
                         required
                     >
                 </div>
-
-                <div>
-                    <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                        Status Pelunasan
-                    </label>
-                    <select
-                        name="status"
-                        class="w-full mt-1.5 px-3 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-400/20 focus:border-violet-400 transition-all"
-                        required
-                    >
-                        <option value="Belum Lunas">Belum Lunas</option>
-                        <option value="Lunas">Lunas</option>
-                    </select>
-                </div>
             </div>
 
             <div class="flex justify-end gap-2.5 mt-6">
@@ -216,13 +190,13 @@ include '../includes/navbar.php';
                     id="btnBatal"
                     class="px-4 py-2 text-sm font-medium rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
                 >
-                    Batal
+                    <?= $lang['batal'] ?? 'Batal'; ?>
                 </button>
                 <button
                     type="submit"
                     class="px-4 py-2 text-sm font-medium rounded-xl bg-violet-500 text-white hover:bg-violet-600 shadow-sm shadow-violet-500/10 transition-colors"
                 >
-                    Simpan
+                    <?= $lang['simpan'] ?? 'Simpan'; ?>
                 </button>
             </div>
         </form>
@@ -240,7 +214,7 @@ include '../includes/navbar.php';
 
         <div class="text-center mb-5">
             <h2 class="text-lg font-bold text-slate-800 dark:text-white tracking-tight">
-                Edit Catatan Utang
+                <?= $lang['edit_utang'] ?? 'Edit Catatan Utang'; ?>
             </h2>
         </div>
 
@@ -250,7 +224,7 @@ include '../includes/navbar.php';
             <div class="space-y-4">
                 <div>
                     <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                        Nama Transaksi / Pemberi Pinjaman
+                        <?= $lang['nama_utang_pinjaman'] ?? 'Nama Utang / Pinjaman'; ?>
                     </label>
                     <input
                         type="text"
@@ -263,7 +237,7 @@ include '../includes/navbar.php';
 
                 <div>
                     <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                        Jumlah Utang (Rp)
+                        <?= $lang['jumlah'] ?? 'Jumlah'; ?> (Rp)
                     </label>
                     <input
                         type="text"
@@ -276,7 +250,7 @@ include '../includes/navbar.php';
 
                 <div>
                     <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                        Tanggal Jatuh Tempo
+                        <?= $lang['jatuh_tempo'] ?? 'Jatuh Tempo'; ?>
                     </label>
                     <input
                         type="date"
@@ -289,7 +263,7 @@ include '../includes/navbar.php';
 
                 <div>
                     <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                        Status Pelunasan
+                        <?= $lang['status'] ?? 'Status'; ?>
                     </label>
                     <select
                         name="status"
@@ -297,8 +271,8 @@ include '../includes/navbar.php';
                         class="w-full mt-1.5 px-3 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-400/20 focus:border-violet-400 transition-all"
                         required
                     >
-                        <option value="Belum Lunas">Belum Lunas</option>
-                        <option value="Lunas">Lunas</option>
+                        <option value="Belum Lunas"><?= $lang['belum_lunas'] ?? 'Belum Lunas'; ?></option>
+                        <option value="Lunas"><?= $lang['lunas'] ?? 'Lunas'; ?></option>
                     </select>
                 </div>
             </div>
@@ -309,13 +283,13 @@ include '../includes/navbar.php';
                     id="closeEdit"
                     class="px-4 py-2 text-sm font-medium rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
                 >
-                    Batal
+                    <?= $lang['batal'] ?? 'Batal'; ?>
                 </button>
                 <button
                     type="submit"
                     class="px-4 py-2 text-sm font-medium rounded-xl bg-violet-500 text-white hover:bg-violet-600 shadow-sm shadow-violet-500/10 transition-colors"
                 >
-                    Simpan
+                    <?= $lang['simpan'] ?? 'Simpan'; ?>
                 </button>
             </div>
         </form>
@@ -394,14 +368,14 @@ document.querySelectorAll('.btnHapus').forEach(button => {
     button.addEventListener('click', function () {
         const id = this.dataset.id;
         Swal.fire({
-            title: 'Hapus catatan utang?',
-            text: 'Data yang dihapus tidak bisa dikembalikan.',
+            title: '<?= $lang['konfirmasi_hapus_utang'] ?? "Hapus catatan utang?"; ?>',
+            text: '<?= $lang['teks_hapus_umum'] ?? "Data yang dihapus tidak bisa dikembalikan."; ?>',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#ef4444',
             cancelButtonColor: '#6b7280',
-            confirmButtonText: 'Ya, Hapus',
-            cancelButtonText: 'Batal'
+            confirmButtonText: '<?= $lang['ya_hapus'] ?? "Ya, Hapus"; ?>',
+            cancelButtonText: '<?= $lang['batal'] ?? "Batal"; ?>'
         }).then((result) => {
             if (result.isConfirmed) {
                 window.location.href = '../process/utang/hapus.php?id=' + id;

@@ -16,10 +16,10 @@ include '../includes/navbar.php';
 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
     <div>
         <h1 class="text-2xl font-bold text-slate-800 dark:text-white tracking-tight">
-            Target Tabungan & Simpanan
+            <?= $lang['target_tabungan_simpanan'] ?? 'Target Tabungan & Simpanan'; ?>
         </h1>
         <p class="text-xs text-slate-400 dark:text-slate-500 mt-0.5">
-            Kelola dan pantau progres tabungan impian Anda secara berkala.
+            <?= $lang['sub_target_tabungan'] ?? 'Kelola dan pantau progres tabungan impian Anda secara berkala.'; ?>
         </p>
     </div>
 
@@ -28,119 +28,99 @@ include '../includes/navbar.php';
         class="inline-flex items-center justify-center gap-2 bg-violet-500 hover:bg-violet-600 text-white px-4 py-2.5 rounded-xl font-medium text-sm shadow-sm shadow-violet-500/10 transition-colors duration-200"
     >
         <i class="fa-solid fa-plus text-xs"></i>
-        Tambah Target
+        <?= $lang['tambah_target'] ?? 'Tambah Target'; ?>
     </button>
 </div>
 
-<div class="grid lg:grid-cols-2 gap-6">
+<?php if (mysqli_num_rows($data) > 0): ?>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <?php while ($d = mysqli_fetch_assoc($data)): 
+            // Mengatasi perbedaan penamaan nama kolom database secara aman
+            $target_dana = $d['target_dana'] ?? ($d['target'] ?? 0);
+            $dana_terkumpul = $d['dana_terkumpul'] ?? ($d['terkumpul'] ?? 0);
+            $tanggal_target = $d['tanggal_target'] ?? ($d['tanggal'] ?? date('Y-m-d'));
 
-<?php if(mysqli_num_rows($data) > 0): ?>
-
-    <?php while($t = mysqli_fetch_assoc($data)) : ?>
-
-        <?php
-        $persen = 0;
-
-        if ($t['target'] > 0) {
-            $persen = ($t['terkumpul'] / $t['target']) * 100;
-
-            if ($persen > 100) {
-                $persen = 100;
-            }
-        }
+            $persen = $target_dana > 0 ? min(100, round(($dana_terkumpul / $target_dana) * 100)) : 0;
         ?>
-
-        <div class="p-6 bg-white dark:bg-slate-900 border <?= $t['is_pinned'] ? 'border-yellow-400 dark:border-yellow-500 ring-2 ring-yellow-400/20' : 'border-slate-100 dark:border-slate-800/50' ?> rounded-2xl shadow-sm transition-all duration-200 hover:shadow-md flex flex-col justify-between relative overflow-hidden">
-            
-            <div>
-                <div class="flex justify-between items-start gap-4">
-                    <div class="flex-1 min-w-0">
-                        <div class="flex items-center gap-2">
-                            <span class="w-6 h-6 rounded-lg bg-blue-50 dark:bg-blue-950/30 flex items-center justify-center text-blue-500 text-xs shrink-0">
-                                <i class="fa-solid fa-piggy-bank"></i>
-                            </span>
-                            <h2 class="text-base font-bold text-slate-800 dark:text-white tracking-tight truncate flex items-center gap-1.5">
-                                <?= htmlspecialchars($t['nama_target']) ?>
-                                <?php if($t['is_pinned']): ?>
-                                    <i class="fa-solid fa-thumbtack text-yellow-500 text-xs" title="Dipatok"></i>
-                                <?php endif; ?>
-                            </h2>
-                        </div>
-
-                        <div class="mt-4 flex items-baseline gap-1.5 flex-wrap">
-                            <span class="text-xl font-bold text-slate-800 dark:text-white tracking-tight">
-                                <?= rupiah($t['terkumpul']) ?>
-                            </span>
-                            <span class="text-xs text-slate-400 dark:text-slate-500 font-medium">
-                                dari <?= rupiah($t['target']) ?>
-                            </span>
+            <div class="bg-white dark:bg-slate-900 border <?= ($d['is_pinned'] ?? 0) ? 'border-violet-200 dark:border-violet-900/50 ring-1 ring-violet-100 dark:ring-violet-950/20' : 'border-slate-100 dark:border-slate-800/50' ?> rounded-2xl p-5 shadow-sm relative group flex flex-col justify-between min-h-[220px]">
+                
+                <div>
+                    <div class="flex items-start justify-between gap-4 mb-3">
+                        <h3 class="font-bold text-slate-800 dark:text-white text-base tracking-tight leading-snug line-clamp-2">
+                            <?= htmlspecialchars($d['nama_target'] ?? ($d['nama'] ?? '-')) ?>
+                        </h3>
+                        <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button 
+                                type="button"
+                                class="btnPin text-slate-400 hover:text-amber-500 p-1 rounded-md transition-colors"
+                                data-id="<?= $d['id'] ?>"
+                            >
+                                <i class="<?= ($d['is_pinned'] ?? 0) ? 'fa-solid fa-thumbtack text-amber-500' : 'fa-solid fa-thumbtack' ?> text-xs"></i>
+                            </button>
+                            <button 
+                                type="button"
+                                class="btnEdit text-slate-400 hover:text-violet-500 p-1 rounded-md transition-colors"
+                                data-id="<?= $d['id'] ?>"
+                                data-nama_target="<?= htmlspecialchars($d['nama_target'] ?? ($d['nama'] ?? '')) ?>"
+                                data-target_dana="<?= $target_dana ?>"
+                                data-dana_terkumpul="<?= $dana_terkumpul ?>"
+                                data-tanggal_target="<?= $tanggal_target ?>"
+                            >
+                                <i class="fa-solid fa-pen text-xs"></i>
+                            </button>
+                            <button 
+                                type="button"
+                                class="btnHapus text-slate-400 hover:text-red-500 p-1 rounded-md transition-colors"
+                                data-id="<?= $d['id'] ?>"
+                            >
+                                <i class="fa-solid fa-trash text-xs"></i>
+                            </button>
                         </div>
                     </div>
 
-                    <div class="flex items-center gap-1.5 shrink-0">
-                        <button
-                            type="button"
-                            class="btnPin border <?= $t['is_pinned'] ? 'bg-yellow-50 border-yellow-200 text-yellow-600 dark:bg-yellow-950/30 dark:border-yellow-900 dark:text-yellow-400' : 'border-slate-200 dark:border-slate-700 text-slate-400 dark:text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800' ?> w-9 h-9 rounded-xl flex items-center justify-center transition-colors duration-150"
-                            data-id="<?= $t['id'] ?>"
-                            title="<?= $t['is_pinned'] ? 'Lepas Sematan' : 'Sematkan' ?>"
-                        >
-                            <i class="fa-solid fa-thumbtack text-xs"></i>
-                        </button>
-
-                        <button
-                            type="button"
-                            class="btnEdit border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 w-9 h-9 rounded-xl flex items-center justify-center transition-colors duration-150"
-                            data-id="<?= $t['id'] ?>"
-                            data-nama_target="<?= htmlspecialchars($t['nama_target']) ?>"
-                            data-target="<?= $t['target'] ?>"
-                            data-terkumpul="<?= $t['terkumpul'] ?>"
-                            data-tanggal="<?= $t['tanggal'] ?>"
-                        >
-                            <i class="fa-solid fa-pen text-xs"></i>
-                        </button>
-
-                        <button
-                            type="button"
-                            class="btnHapus bg-red-50 dark:bg-red-950/20 text-red-500 hover:bg-red-100 dark:hover:bg-red-950/40 w-9 h-9 rounded-xl flex items-center justify-center transition-colors duration-150"
-                            data-id="<?= $t['id'] ?>"
-                        >
-                            <i class="fa-solid fa-trash text-xs"></i>
-                        </button>
+                    <div class="flex flex-col gap-0.5 mb-5">
+                        <div class="text-xs text-slate-400 dark:text-slate-500">
+                            <?= $lang['progres_capaian'] ?? 'Progres Capaian'; ?>
+                        </div>
+                        <div class="flex items-baseline gap-1">
+                            <span class="text-lg font-black text-slate-800 dark:text-white"><?= rupiah($dana_terkumpul) ?></span>
+                            <span class="text-xs text-slate-400 dark:text-slate-500"><?= $lang['dari'] ?? 'dari'; ?> <?= rupiah($target_dana) ?></span>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="mt-5">
-                <div class="flex justify-between items-center mb-1.5 text-xs font-semibold">
-                    <span class="text-slate-400 dark:text-slate-500 uppercase tracking-wider">Progres Capaian</span>
-                    <span class="text-violet-500"><?= number_format($persen, 0) ?>%</span>
+                <div>
+                    <div class="w-full bg-slate-100 dark:bg-slate-800 h-2 rounded-full overflow-hidden mb-3.5">
+                        <div 
+                            class="bg-gradient-to-r from-violet-500 to-fuchsia-500 h-full rounded-full transition-all duration-500"
+                            style="width: <?= $persen ?>%"
+                        ></div>
+                    </div>
+
+                    <div class="flex items-center justify-between text-xs">
+                        <span class="inline-flex items-center gap-1 text-slate-400 dark:text-slate-500 font-medium">
+                            <i class="fa-regular fa-calendar text-[10px]"></i>
+                            <?= date('d M Y', strtotime($tanggal_target)) ?>
+                        </span>
+                        <span class="font-bold text-violet-500 bg-violet-50 dark:bg-violet-950/30 px-2 py-0.5 rounded-md">
+                            <?= $persen ?>%
+                        </span>
+                    </div>
                 </div>
-                <div class="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-2.5 overflow-hidden">
-                    <div
-                        class="bg-violet-500 h-2.5 rounded-full transition-all duration-500"
-                        style="width: <?= $persen ?>%"
-                    ></div>
-                </div>
+
             </div>
-
-        </div>
-
-    <?php endwhile; ?>
-
-<?php else : ?>
-
-    <div class="p-6 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/50 rounded-2xl shadow-sm lg:col-span-2 text-center py-12">
-        <span class="w-12 h-12 rounded-xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-slate-400 mx-auto mb-3 text-lg">
-            <i class="fa-solid fa-folder-open"></i>
-        </span>
-        <p class="text-sm font-medium text-slate-400 dark:text-slate-500">
-            Belum ada target tabungan yang ditambahkan.
-        </p>
+        <?php endwhile; ?>
     </div>
-
+<?php else: ?>
+    <div class="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/50 rounded-2xl shadow-sm p-16 text-center">
+        <span class="w-12 h-12 rounded-2xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-slate-400 mx-auto mb-4 text-xl">
+            <i class="fa-solid fa-piggy-bank"></i>
+        </span>
+        <h3 class="text-base font-bold text-slate-700 dark:text-slate-300 mb-1">
+            <?= $lang['belum_ada_tabungan'] ?? 'Belum ada target tabungan yang ditambahkan.'; ?>
+        </h3>
+    </div>
 <?php endif; ?>
-
-</div>
 
 <div
     id="modalTambah"
@@ -153,7 +133,7 @@ include '../includes/navbar.php';
 
         <div class="text-center mb-5">
             <h2 class="text-lg font-bold text-slate-800 dark:text-white tracking-tight">
-                Tambah Target Tabungan
+                <?= $lang['tambah_target'] ?? 'Tambah Target'; ?>
             </h2>
         </div>
 
@@ -161,12 +141,12 @@ include '../includes/navbar.php';
             <div class="space-y-4">
                 <div>
                     <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                        Nama Target Tabungan
+                        <?= $lang['nama_target_tabungan'] ?? 'Nama Target Tabungan'; ?>
                     </label>
                     <input
                         type="text"
                         name="nama_target"
-                        placeholder="Contoh: Beli Laptop, Dana Darurat"
+                        placeholder="<?= $lang['contoh_tabungan'] ?? 'Contoh: Beli Laptop, Dana Darurat'; ?>"
                         class="w-full mt-1.5 px-3 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-400/20 focus:border-violet-400 transition-all"
                         required
                     >
@@ -174,12 +154,12 @@ include '../includes/navbar.php';
 
                 <div>
                     <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                        Target Tabungan (Rp)
+                        <?= $lang['target_tabungan_rp'] ?? 'Target Tabungan (Rp)'; ?>
                     </label>
                     <input
                         type="text"
-                        id="target"
-                        name="target"
+                        id="target_dana"
+                        name="target_dana"
                         placeholder="0"
                         class="w-full mt-1.5 px-3 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-400/20 focus:border-violet-400 transition-all"
                         required
@@ -188,26 +168,28 @@ include '../includes/navbar.php';
 
                 <div>
                     <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                        Jumlah Terkumpul Saat Ini (Rp)
+                        <?= $lang['dana_terkumpul_rp'] ?? 'Dana Terkumpul (Rp)'; ?>
                     </label>
                     <input
                         type="text"
-                        id="terkumpul"
-                        name="terkumpul"
-                        value="0"
+                        id="dana_terkumpul"
+                        name="dana_terkumpul"
+                        placeholder="0"
                         class="w-full mt-1.5 px-3 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-400/20 focus:border-violet-400 transition-all"
+                        required
                     >
                 </div>
 
                 <div>
                     <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                        Tanggal Mulai
+                        <?= $lang['tanggal_target'] ?? 'Tanggal Target'; ?>
                     </label>
                     <input
                         type="date"
-                        name="tanggal"
+                        name="tanggal_target"
                         value="<?= date('Y-m-d') ?>"
                         class="w-full mt-1.5 px-3 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-400/20 focus:border-violet-400 transition-all"
+                        required
                     >
                 </div>
             </div>
@@ -218,13 +200,13 @@ include '../includes/navbar.php';
                     id="btnBatal"
                     class="px-4 py-2 text-sm font-medium rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
                 >
-                    Batal
+                    <?= $lang['batal'] ?? 'Batal'; ?>
                 </button>
                 <button
                     type="submit"
                     class="px-4 py-2 text-sm font-medium rounded-xl bg-violet-500 text-white hover:bg-violet-600 shadow-sm shadow-violet-500/10 transition-colors"
                 >
-                    Simpan
+                    <?= $lang['simpan'] ?? 'Simpan'; ?>
                 </button>
             </div>
         </form>
@@ -242,7 +224,7 @@ include '../includes/navbar.php';
 
         <div class="text-center mb-5">
             <h2 class="text-lg font-bold text-slate-800 dark:text-white tracking-tight">
-                Edit Target Tabungan
+                <?= $lang['edit_target_tabungan'] ?? 'Edit Target Tabungan'; ?>
             </h2>
         </div>
 
@@ -252,7 +234,7 @@ include '../includes/navbar.php';
             <div class="space-y-4">
                 <div>
                     <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                        Nama Target Tabungan
+                        <?= $lang['nama_target_tabungan'] ?? 'Nama Target Tabungan'; ?>
                     </label>
                     <input
                         type="text"
@@ -265,12 +247,12 @@ include '../includes/navbar.php';
 
                 <div>
                     <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                        Target Tabungan (Rp)
+                        <?= $lang['target_tabungan_rp'] ?? 'Target Tabungan (Rp)'; ?>
                     </label>
                     <input
                         type="text"
-                        id="edit_target"
-                        name="target"
+                        id="edit_target_dana"
+                        name="target_dana"
                         class="w-full mt-1.5 px-3 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-400/20 focus:border-violet-400 transition-all"
                         required
                     >
@@ -278,25 +260,27 @@ include '../includes/navbar.php';
 
                 <div>
                     <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                        Jumlah Terkumpul Saat Ini (Rp)
+                        <?= $lang['dana_terkumpul_rp'] ?? 'Dana Terkumpul (Rp)'; ?>
                     </label>
                     <input
                         type="text"
-                        id="edit_terkumpul"
-                        name="terkumpul"
+                        id="edit_dana_terkumpul"
+                        name="dana_terkumpul"
                         class="w-full mt-1.5 px-3 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-400/20 focus:border-violet-400 transition-all"
+                        required
                     >
                 </div>
 
                 <div>
                     <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                        Tanggal Mulai
+                        <?= $lang['tanggal_target'] ?? 'Tanggal Target'; ?>
                     </label>
                     <input
                         type="date"
-                        name="tanggal"
-                        id="edit_tanggal"
+                        name="tanggal_target"
+                        id="edit_tanggal_target"
                         class="w-full mt-1.5 px-3 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-400/20 focus:border-violet-400 transition-all"
+                        required
                     >
                 </div>
             </div>
@@ -307,13 +291,13 @@ include '../includes/navbar.php';
                     id="closeEdit"
                     class="px-4 py-2 text-sm font-medium rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
                 >
-                    Batal
+                    <?= $lang['batal'] ?? 'Batal'; ?>
                 </button>
                 <button
                     type="submit"
                     class="px-4 py-2 text-sm font-medium rounded-xl bg-violet-500 text-white hover:bg-violet-600 shadow-sm shadow-violet-500/10 transition-colors"
                 >
-                    Simpan
+                    <?= $lang['simpan'] ?? 'Simpan'; ?>
                 </button>
             </div>
         </form>
@@ -357,31 +341,26 @@ modalEdit.addEventListener('click', (e) => {
 });
 
 function formatRupiah(input) {
+    if(!input) return;
     input.addEventListener('input', function () {
         let angka = this.value.replace(/\D/g, '');
         this.value = new Intl.NumberFormat('id-ID').format(angka);
     });
 }
 
-formatRupiah(document.getElementById('target'));
-formatRupiah(document.getElementById('terkumpul'));
-
-const editTarget = document.getElementById('edit_target');
-const editTerkumpul = document.getElementById('edit_terkumpul');
-
-formatRupiah(editTarget);
-formatRupiah(editTerkumpul);
+formatRupiah(document.getElementById('target_dana'));
+formatRupiah(document.getElementById('dana_terkumpul'));
+formatRupiah(document.getElementById('edit_target_dana'));
+formatRupiah(document.getElementById('edit_dana_terkumpul'));
 
 document.querySelector('#modalTambah form').addEventListener('submit', () => {
-    const targetInput = document.getElementById('target');
-    const terkumpulInput = document.getElementById('terkumpul');
-    targetInput.value = targetInput.value.replace(/\./g, '');
-    terkumpulInput.value = terkumpulInput.value.replace(/\./g, '');
+    document.getElementById('target_dana').value = document.getElementById('target_dana').value.replace(/\./g, '');
+    document.getElementById('dana_terkumpul').value = document.getElementById('dana_terkumpul').value.replace(/\./g, '');
 });
 
 document.querySelector('#modalEdit form').addEventListener('submit', () => {
-    editTarget.value = editTarget.value.replace(/\./g, '');
-    editTerkumpul.value = editTerkumpul.value.replace(/\./g, '');
+    document.getElementById('edit_target_dana').value = document.getElementById('edit_target_dana').value.replace(/\./g, '');
+    document.getElementById('edit_dana_terkumpul').value = document.getElementById('edit_dana_terkumpul').value.replace(/\./g, '');
 });
 
 document.querySelectorAll('.btnEdit').forEach(btn => {
@@ -389,9 +368,9 @@ document.querySelectorAll('.btnEdit').forEach(btn => {
         modalEdit.classList.remove('hidden');
         document.getElementById('edit_id').value = this.dataset.id;
         document.getElementById('edit_nama_target').value = this.dataset.nama_target;
-        document.getElementById('edit_target').value = new Intl.NumberFormat('id-ID').format(this.dataset.target);
-        document.getElementById('edit_terkumpul').value = new Intl.NumberFormat('id-ID').format(this.dataset.terkumpul);
-        document.getElementById('edit_tanggal').value = this.dataset.tanggal;
+        document.getElementById('edit_target_dana').value = new Intl.NumberFormat('id-ID').format(this.dataset.target_dana);
+        document.getElementById('edit_dana_terkumpul').value = new Intl.NumberFormat('id-ID').format(this.dataset.dana_terkumpul);
+        document.getElementById('edit_tanggal_target').value = this.dataset.tanggal_target;
     });
 });
 
@@ -399,14 +378,14 @@ document.querySelectorAll('.btnHapus').forEach(button => {
     button.addEventListener('click', function () {
         const id = this.dataset.id;
         Swal.fire({
-            title: 'Hapus target tabungan?',
-            text: 'Data yang dihapus tidak bisa dikembalikan.',
+            title: '<?= $lang['konfirmasi_hapus_tabungan'] ?? "Hapus target tabungan?"; ?>',
+            text: '<?= $lang['teks_hapus_umum'] ?? "Data yang dihapus tidak bisa dikembalikan."; ?>',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#ef4444',
             cancelButtonColor: '#6b7280',
-            confirmButtonText: 'Ya, Hapus',
-            cancelButtonText: 'Batal'
+            confirmButtonText: '<?= $lang['ya_hapus'] ?? "Ya, Hapus"; ?>',
+            cancelButtonText: '<?= $lang['batal'] ?? "Batal"; ?>'
         }).then((result) => {
             if (result.isConfirmed) {
                 window.location.href = '../process/tabungan/hapus.php?id=' + id;
@@ -425,13 +404,9 @@ document.querySelectorAll('.btnPin').forEach(button => {
             },
             body: 'id=' + id
         })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                location.reload();
-            }
-        })
-        .catch(error => console.error('Error:', error));
+        .then(() => {
+            window.location.reload();
+        });
     });
 });
 </script>
