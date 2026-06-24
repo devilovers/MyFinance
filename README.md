@@ -62,7 +62,7 @@ myfinance/
 ### Dashboard
 
 <p align="center">
-  <img src="screenshots/ssdashboard.png" width="900">
+  <img src="screenshots/dashboard.png" width="900">
 </p>
 
 ## 🎯 Learning Goals
