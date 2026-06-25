@@ -35,9 +35,10 @@ include '../includes/navbar.php';
 <?php if (mysqli_num_rows($data) > 0): ?>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <?php while ($d = mysqli_fetch_assoc($data)): 
-            $target_dana = $d['target_dana'] ?? ($d['target'] ?? 0);
-            $dana_terkumpul = $d['dana_terkumpul'] ?? ($d['terkumpul'] ?? 0);
-            $tanggal_target = $d['tanggal_target'] ?? ($d['tanggal'] ?? date('Y-m-d'));
+            $nama_target = $d['nama_target'] ?? '-';
+            $target_dana = $d['target'] ?? 0; 
+            $dana_terkumpul = $d['terkumpul'] ?? 0; 
+            $tanggal_target = $d['tanggal'] ?? date('Y-m-d'); // Membaca dari kolom 'tanggal'
 
             $persen = $target_dana > 0 ? min(100, round(($dana_terkumpul / $target_dana) * 100)) : 0;
         ?>
@@ -46,7 +47,7 @@ include '../includes/navbar.php';
                 <div>
                     <div class="flex items-start justify-between gap-4 mb-3">
                         <h3 class="font-bold text-slate-800 dark:text-white text-base tracking-tight leading-snug line-clamp-2">
-                            <?= htmlspecialchars($d['nama_target'] ?? ($d['nama'] ?? '-')) ?>
+                            <?= htmlspecialchars($nama_target) ?>
                         </h3>
                         <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                             <button 
@@ -60,7 +61,7 @@ include '../includes/navbar.php';
                                 type="button"
                                 class="btnEdit field-target-btn text-slate-400 hover:text-violet-500 p-1 rounded-md transition-colors"
                                 data-id="<?= $d['id'] ?>"
-                                data-nama_target="<?= htmlspecialchars($d['nama_target'] ?? ($d['nama'] ?? '')) ?>"
+                                data-nama_target="<?= htmlspecialchars($nama_target) ?>"
                                 data-target_dana="<?= $target_dana ?>"
                                 data-dana_terkumpul="<?= $dana_terkumpul ?>"
                                 data-tanggal_target="<?= $tanggal_target ?>"
@@ -144,10 +145,10 @@ include '../includes/navbar.php';
                     </label>
                     <input
                         type="text"
-                        name="nama_target"
                         placeholder="<?= $lang['contoh_tabungan'] ?? 'Contoh: Beli Laptop, Dana Darurat'; ?>"
                         class="w-full mt-1.5 px-3 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-400/20 focus:border-violet-400 transition-all"
                         required
+                        id="target_nama"
                     >
                 </div>
 
@@ -158,7 +159,6 @@ include '../includes/navbar.php';
                     <input
                         type="text"
                         id="target_dana"
-                        name="target_dana"
                         placeholder="0"
                         class="w-full mt-1.5 px-3 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-400/20 focus:border-violet-400 transition-all"
                         required
@@ -172,7 +172,6 @@ include '../includes/navbar.php';
                     <input
                         type="text"
                         id="dana_terkumpul"
-                        name="dana_terkumpul"
                         placeholder="0"
                         class="w-full mt-1.5 px-3 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-400/20 focus:border-violet-400 transition-all"
                         required
@@ -185,10 +184,10 @@ include '../includes/navbar.php';
                     </label>
                     <input
                         type="date"
-                        name="tanggal_target"
                         value="<?= date('Y-m-d') ?>"
                         class="w-full mt-1.5 px-3 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-400/20 focus:border-violet-400 transition-all"
                         required
+                        id="target_tanggal"
                     >
                 </div>
             </div>
@@ -242,7 +241,6 @@ include '../includes/navbar.php';
                     </label>
                     <input
                         type="text"
-                        name="nama_target"
                         id="edit_nama_target"
                         class="w-full mt-1.5 px-3 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-400/20 focus:border-violet-400 transition-all"
                         required
@@ -256,7 +254,6 @@ include '../includes/navbar.php';
                     <input
                         type="text"
                         id="edit_target"
-                        name="target_dana"
                         class="w-full mt-1.5 px-3 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-400/20 focus:border-violet-400 transition-all"
                         required
                     >
@@ -269,7 +266,6 @@ include '../includes/navbar.php';
                     <input
                         type="text"
                         id="edit_terkumpul"
-                        name="dana_terkumpul"
                         class="w-full mt-1.5 px-3 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-400/20 focus:border-violet-400 transition-all"
                         required
                     >
@@ -281,7 +277,6 @@ include '../includes/navbar.php';
                     </label>
                     <input
                         type="date"
-                        name="tanggal_target"
                         id="edit_tanggal"
                         class="w-full mt-1.5 px-3 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-400/20 focus:border-violet-400 transition-all"
                         required
@@ -362,14 +357,11 @@ formatRupiah(document.getElementById('dana_terkumpul'));
 formatRupiah(document.getElementById('edit_target'));
 formatRupiah(document.getElementById('edit_terkumpul'));
 
-document.querySelector('#modalTambah form').addEventListener('submit', function() {
+document.querySelector('#modalTambah form').addEventListener('submit', function(e) {
     let rawTarget = document.getElementById('target_dana').value.replace(/\./g, '');
     let rawTerkumpul = document.getElementById('dana_terkumpul').value.replace(/\./g, '');
-    let rawNama = this.querySelector('input[name="nama_target"]').value;
-    let rawTanggal = this.querySelector('input[name="tanggal_target"]').value;
-
-    document.getElementById('target_dana').value = rawTarget;
-    document.getElementById('dana_terkumpul').value = rawTerkumpul;
+    let rawNama = document.getElementById('target_nama').value;
+    let rawTanggal = document.getElementById('target_tanggal').value;
 
     document.getElementById('alt_target').value = rawTarget;
     document.getElementById('alt_terkumpul').value = rawTerkumpul;
@@ -377,14 +369,11 @@ document.querySelector('#modalTambah form').addEventListener('submit', function(
     document.getElementById('alt_tanggal').value = rawTanggal;
 });
 
-document.querySelector('#modalEdit form').addEventListener('submit', function() {
+document.querySelector('#modalEdit form').addEventListener('submit', function(e) {
     let rawTarget = document.getElementById('edit_target').value.replace(/\./g, '');
     let rawTerkumpul = document.getElementById('edit_terkumpul').value.replace(/\./g, '');
     let rawNama = document.getElementById('edit_nama_target').value;
     let rawTanggal = document.getElementById('edit_tanggal').value;
-
-    document.getElementById('edit_target').value = rawTarget;
-    document.getElementById('edit_terkumpul').value = rawTerkumpul;
 
     document.getElementById('alt_edit_target').value = rawTarget;
     document.getElementById('alt_edit_terkumpul').value = rawTerkumpul;
