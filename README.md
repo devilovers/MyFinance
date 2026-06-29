@@ -49,10 +49,43 @@ The application allows users to track their financial targets, manage transactio
 ```bash
 myfinance/
 │
-├── screenshots/
 ├── assets/
+├── config/
+│   └── koneksi.php
+│
+├── helpers/
+│   └── finance_helper.php
+│
 ├── includes/
+│   ├── header.php
+│   ├── navbar.php
+│   ├── sidebar.php
+│   └── footer.php
+│
+├── languages/
+│   ├── id.php
+│   └── en.php
+│
 ├── pages/
+│   ├── dashboard.php
+│   ├── transaksi.php
+│   ├── tabungan.php
+│   ├── investasi.php
+│   ├── utang.php
+│   └── laporan.php
+│
+├── process/
+│   ├── transaksi/
+│   ├── tabungan/
+│   │   ├── tambah.php
+│   │   ├── edit.php
+│   │   ├── hapus.php
+│   │   └── pin.php
+│   ├── investasi/
+│   └── utang/
+│
+├── screenshots/
+├── .gitignore
 ├── index.php
 └── README.md
 
