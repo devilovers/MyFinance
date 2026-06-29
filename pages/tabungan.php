@@ -38,7 +38,7 @@ include '../includes/navbar.php';
             $nama_target = $d['nama_target'] ?? '-';
             $target_dana = $d['target'] ?? 0; 
             $dana_terkumpul = $d['terkumpul'] ?? 0; 
-            $tanggal_target = $d['tanggal'] ?? date('Y-m-d'); // Membaca dari kolom 'tanggal'
+            $tanggal_target = $d['tanggal'] ?? date('Y-m-d');
 
             $persen = $target_dana > 0 ? min(100, round(($dana_terkumpul / $target_dana) * 100)) : 0;
         ?>
@@ -195,7 +195,7 @@ include '../includes/navbar.php';
             <input type="hidden" name="target" id="alt_target">
             <input type="hidden" name="terkumpul" id="alt_terkumpul">
             <input type="hidden" name="tanggal" id="alt_tanggal">
-            <input type="hidden" name="nama" id="alt_nama">
+            <input type="hidden" name="nama_target" id="alt_nama">
 
             <div class="flex justify-end gap-2.5 mt-6">
                 <button
@@ -287,7 +287,7 @@ include '../includes/navbar.php';
             <input type="hidden" name="target" id="alt_edit_target">
             <input type="hidden" name="terkumpul" id="alt_edit_terkumpul">
             <input type="hidden" name="tanggal" id="alt_edit_tanggal">
-            <input type="hidden" name="nama" id="alt_edit_nama">
+            <input type="hidden" name="nama_target" id="alt_edit_nama">
 
             <div class="flex justify-end gap-2.5 mt-6">
                 <button

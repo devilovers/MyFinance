@@ -1,0 +1,7 @@
+*.log
+
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+*.sql
