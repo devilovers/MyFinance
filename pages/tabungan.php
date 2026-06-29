@@ -345,7 +345,7 @@ modalEdit.addEventListener('click', (e) => {
 });
 
 function formatRupiah(input) {
-    if(!input) return;
+    if (!input) return;
     input.addEventListener('input', function () {
         let angka = this.value.replace(/\D/g, '');
         this.value = new Intl.NumberFormat('id-ID').format(angka);
