@@ -145,6 +145,7 @@ include '../includes/navbar.php';
                     </label>
                     <input
                         type="text"
+                        name="nama"
                         placeholder="<?= $lang['contoh_tabungan'] ?? 'Contoh: Beli Laptop, Dana Darurat'; ?>"
                         class="w-full mt-1.5 px-3 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-400/20 focus:border-violet-400 transition-all"
                         required
@@ -195,7 +196,6 @@ include '../includes/navbar.php';
             <input type="hidden" name="target" id="alt_target">
             <input type="hidden" name="terkumpul" id="alt_terkumpul">
             <input type="hidden" name="tanggal" id="alt_tanggal">
-            <input type="hidden" name="nama_target" id="alt_nama">
 
             <div class="flex justify-end gap-2.5 mt-6">
                 <button
@@ -241,6 +241,7 @@ include '../includes/navbar.php';
                     </label>
                     <input
                         type="text"
+                        name="nama_target"
                         id="edit_nama_target"
                         class="w-full mt-1.5 px-3 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-400/20 focus:border-violet-400 transition-all"
                         required
@@ -287,7 +288,6 @@ include '../includes/navbar.php';
             <input type="hidden" name="target" id="alt_edit_target">
             <input type="hidden" name="terkumpul" id="alt_edit_terkumpul">
             <input type="hidden" name="tanggal" id="alt_edit_tanggal">
-            <input type="hidden" name="nama_target" id="alt_edit_nama">
 
             <div class="flex justify-end gap-2.5 mt-6">
                 <button
@@ -360,24 +360,20 @@ formatRupiah(document.getElementById('edit_terkumpul'));
 document.querySelector('#modalTambah form').addEventListener('submit', function(e) {
     let rawTarget = document.getElementById('target_dana').value.replace(/\./g, '');
     let rawTerkumpul = document.getElementById('dana_terkumpul').value.replace(/\./g, '');
-    let rawNama = document.getElementById('target_nama').value;
     let rawTanggal = document.getElementById('target_tanggal').value;
 
     document.getElementById('alt_target').value = rawTarget;
     document.getElementById('alt_terkumpul').value = rawTerkumpul;
-    document.getElementById('alt_nama').value = rawNama;
     document.getElementById('alt_tanggal').value = rawTanggal;
 });
 
 document.querySelector('#modalEdit form').addEventListener('submit', function(e) {
     let rawTarget = document.getElementById('edit_target').value.replace(/\./g, '');
     let rawTerkumpul = document.getElementById('edit_terkumpul').value.replace(/\./g, '');
-    let rawNama = document.getElementById('edit_nama_target').value;
     let rawTanggal = document.getElementById('edit_tanggal').value;
 
     document.getElementById('alt_edit_target').value = rawTarget;
     document.getElementById('alt_edit_terkumpul').value = rawTerkumpul;
-    document.getElementById('alt_edit_nama').value = rawNama;
     document.getElementById('alt_edit_tanggal').value = rawTanggal;
 });
 
