@@ -1,6 +1,6 @@
 <?php
 $lang = [
-    'dashboard' => 'Dashboard',
+    'dashboard'                 => 'Dashboard',
     'transaksi' => 'Transactions',
     'tabungan' => 'Savings',
     'investasi' => 'Investment',
