@@ -1,9 +1,6 @@
 <?php
-// Finance helper functions for MyFinance application
-function rupiah($angka)
-{
-    return 'Rp ' . number_format($angka ?? 0, 0, ',', '.');
-}
+
+function rupiah($angka) { return 'Rp ' . number_format($angka ?? 0, 0, ',', '.'); }
 
 function totalPemasukan($conn)
 {
