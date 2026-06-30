@@ -7,7 +7,7 @@ A modern personal finance tracker built with **PHP** and **MySQL**, designed to 
 <p>
   <img src="https://img.shields.io/badge/PHP-8.x-777BB4?style=for-the-badge&logo=php&logoColor=white">
   <img src="https://img.shields.io/badge/MySQL-Database-4479A1?style=for-the-badge&logo=mysql&logoColor=white">
-  <img src="https://img.shields.io/badge/Status-In_Development-FFC107?style=for-the-badge">
+  <img src="https://img.shields.io/badge/Status-In_Development-F59E0B?style=for-the-badge">
 </p>
 
 </div>
