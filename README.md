@@ -1,120 +1,72 @@
-<h1 align="center">
-  💰 MyFinance
-</h1>
+<div align="center">
 
-<p align="center">
-  A modern personal finance tracker built with PHP and MySQL to manage your savings and budget efficiently.
+# MyFinance
+
+A modern personal finance tracker built with **PHP** and **MySQL**, designed to help users manage savings, transactions, and financial goals through an intuitive web interface.
+
+<p>
+  <img src="https://img.shields.io/badge/PHP-8.x-777BB4?style=for-the-badge&logo=php&logoColor=white">
+  <img src="https://img.shields.io/badge/MySQL-Database-4479A1?style=for-the-badge&logo=mysql&logoColor=white">
+  <img src="https://img.shields.io/badge/Status-In_Development-FFC107?style=for-the-badge">
 </p>
 
-<p align="center">
-  <img src="https://img.shields.io/badge/PHP-8-blue?style=for-the-badge&logo=php">
-  <img src="https://img.shields.io/badge/MySQL-Database-orange?style=for-the-badge&logo=mysql">
-  <img src="https://img.shields.io/badge/Status-In_Development-yellow?style=for-the-badge">
-</p>
+</div>
 
 ---
 
-## ✨ About Project
+## Overview
 
-MyFinance is a personal finance management platform built as part of my learning journey in web development.
-
-The application allows users to track their financial targets, manage transactions, and monitor their savings through a simple and modern interface.
+MyFinance is a personal finance management platform created to explore full-stack web development concepts using PHP and MySQL. The application focuses on organizing financial activities, tracking progress toward savings goals, and providing a simple yet modern experience for managing personal finances.
 
 ---
 
-## 🚀 Features
+## Features
 
-* 📈 Financial target tracking
-* 💳 Transaction management
-* 📋 Debt and Investment tracking
-* 🌙 Switch between dark and light mode
-* 📱 Responsive interface
-* 💾 MySQL database integration
-
----
-
-## 🛠️ Built With
-
-* PHP Native
-* MySQL
-* HTML5
-* CSS3 (Tailwind CSS)
-* JavaScript
-* XAMPP
+* Financial target and savings tracking
+* Transaction management system
+* Debt and investment monitoring
+* Dashboard with financial summaries
+* Dark and light mode support
+* Responsive user interface
+* Multi-language support
+* MySQL database integration
 
 ---
 
-## 📂 Project Structure
+## Technologies
 
-```bash
-myfinance/
-│
-├── assets/
-├── config/
-│   └── koneksi.php
-│
-├── helpers/
-│   └── finance_helper.php
-│
-├── includes/
-│   ├── header.php
-│   ├── navbar.php
-│   ├── sidebar.php
-│   └── footer.php
-│
-├── languages/
-│   ├── id.php
-│   └── en.php
-│
-├── pages/
-│   ├── dashboard.php
-│   ├── transaksi.php
-│   ├── tabungan.php
-│   ├── investasi.php
-│   ├── utang.php
-│   └── laporan.php
-│
-├── process/
-│   ├── transaksi/
-│   ├── tabungan/
-│   │   ├── tambah.php
-│   │   ├── edit.php
-│   │   ├── hapus.php
-│   │   └── pin.php
-│   ├── investasi/
-│   └── utang/
-│
-├── screenshots/
-├── .gitignore
-├── index.php
-└── README.md
+| Technology   | Description                              |
+| ------------ | ---------------------------------------- |
+| PHP Native   | Core server-side programming language    |
+| MySQL        | Relational database management system    |
+| HTML5        | Structure and content of the application |
+| Tailwind CSS | Modern utility-first CSS framework       |
+| JavaScript   | Interactive client-side functionality    |
+| XAMPP        | Local development environment            |
 
-```
-## 📸 Screenshots
+---
+
+## Screenshots
 
 ### Dashboard
 
-<p align="center">
+<p align="left">
   <img src="screenshots/dashboard.png" width="900">
 </p>
 
-## 🎯 Learning Goals
-
-* Understanding PHP and MySQL integration
-* Learning session management
-* Practicing database management
-* Building a complete responsive web application from scratch
-
 ---
 
-## 👩🏻‍💻 Author
+## Author
 
-**Nur Islami Sabila**
+<p>
+<strong>Nur Islami Sabila</strong><br>
+Informatics Engineering Student from Indonesia.
+</p>
 
-Frontend Developer & Informatics Student Candidate from Indonesia 🇮🇩
+<blockquote>
+Learning by building, growing by creating.
+</blockquote>
 
-> "Learning by building, growing by creating."
-
----
-
-⭐ If you like this project, don't forget to give it a star.
+<p align="left">
+If you found this project helpful, consider giving it a ⭐ to support the repository.
+</p>
