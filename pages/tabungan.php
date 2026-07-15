@@ -41,6 +41,9 @@ include '../includes/navbar.php';
             $tanggal_target = $d['tanggal'] ?? date('Y-m-d');
 
             $persen = $target_dana > 0 ? min(100, round(($dana_terkumpul / $target_dana) * 100)) : 0;
+            
+            // Hitung sisa kekurangan target dana
+            $sisa_dana = $target_dana - $dana_terkumpul;
         ?>
             <div class="bg-white dark:bg-slate-900 border <?= ($d['is_pinned'] ?? 0) ? 'border-violet-200 dark:border-violet-900/50 ring-1 ring-violet-100 dark:ring-violet-950/20' : 'border-slate-100 dark:border-slate-800/50' ?> rounded-2xl p-5 shadow-sm relative group flex flex-col justify-between min-h-[220px]">
                 
@@ -79,8 +82,13 @@ include '../includes/navbar.php';
                     </div>
 
                     <div class="flex flex-col gap-0.5 mb-5">
-                        <div class="text-xs text-slate-400 dark:text-slate-500">
-                            <?= $lang['progres_capaian'] ?? 'Progres Capaian'; ?>
+                        <div class="text-xs text-slate-400 dark:text-slate-500 flex justify-between items-center">
+                            <span><?= $lang['progres_capaian'] ?? 'Progres Capaian'; ?></span>
+                            <?php if ($sisa_dana > 0): ?>
+                                <span class="text-[10px] font-semibold text-red-500 bg-red-50 dark:bg-red-950/30 px-1.5 py-0.5 rounded">-<?= rupiah($sisa_dana) ?></span>
+                            <?php else: ?>
+                                <span class="text-[10px] font-semibold text-emerald-500 bg-emerald-50 dark:bg-emerald-950/30 px-1.5 py-0.5 rounded">Lunas / Terpenuhi</span>
+                            <?php endif; ?>
                         </div>
                         <div class="flex items-baseline gap-1">
                             <span class="text-lg font-black text-slate-800 dark:text-white"><?= rupiah($dana_terkumpul) ?></span>
