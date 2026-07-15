@@ -7,6 +7,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $dana_terkumpul = intval($_POST['terkumpul'] ?? 0);
     $tanggal_target = mysqli_real_escape_string($conn, $_POST['tanggal'] ?? date('Y-m-d'));
 
+    if ($dana_terkumpul > $target_dana) {
+        $dana_terkumpul = $target_dana;
+    }
+
     if ($dana_terkumpul <= 0) {
         $queryTabungan = "INSERT INTO tabungan (nama_target, target, terkumpul, tanggal, created_at) 
                           VALUES ('$nama_target', '$target_dana', 0, '$tanggal_target', NOW())";

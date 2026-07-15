@@ -65,7 +65,6 @@ $lang = [
     'tambah_catatan_utang' => 'Add Debt Record',
     'belum_ada_utang' => 'No debt records have been added yet.',
     'lunas' => 'Paid',
-    'belum_lunas' => 'Unpaid',
     'nama_utang_pinjaman' => 'Debt / Loan Name',
     'contoh_utang' => 'Example: Bank Loan, Friend\'s Debt',
     'jumlah_utang_rp' => 'Debt Amount (Rp)',

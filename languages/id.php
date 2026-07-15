@@ -65,7 +65,6 @@ $lang = [
     'tambah_catatan_utang' => 'Tambah Catatan Utang',
     'belum_ada_utang' => 'Belum ada catatan utang yang ditambahkan.',
     'lunas' => 'Lunas',
-    'belum_lunas' => 'Belum Lunas',
     'nama_utang_pinjaman' => 'Nama Utang / Pinjaman',
     'contoh_utang' => 'Contoh: Pinjaman Bank, Utang Teman',
     'jumlah_utang_rp' => 'Jumlah Utang (Rp)',
